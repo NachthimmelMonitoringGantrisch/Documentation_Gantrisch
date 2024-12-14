@@ -1,27 +1,84 @@
 # Bedienungsanleitung der Nachthimmelmonitoring-Anwendung Naturpark Gantrisch
 
-Dies ist die Anleitung über die Nachthimmelmonitoring-Anwendung
+Dies ist die Anleitung für die Nachthimmelmonitoring-Anwendung, die speziell für die Analyse und Visualisierung von Daten aus Photometermessungen im Naturpark Gantrisch entwickelt wurde.
 
 ## Installation
 
-Für die Installation benötigen Sie Docker (Version xyz). Die Mindestanforderungen sind: .... Microsoft-Rechner ab Windows 10
+### Voraussetzungen
+
+- **Docker**: Installieren Sie Docker in der Version `xyz` oder höher.
+- **Systemanforderungen**: Ein Rechner mit **Windows 10** oder höher bzw. ein kompatibles Betriebssystem.
+- **Internetverbindung**: Für den Zugriff auf aktuelle Daten und Software-Updates.
+
+### Schritte zur Installation
+
+Die Anleitung für die Installation finden Sie hier: [GitHub](https://github.com/NachthimmelMonitoringGantrisch/NachthimmelMonitoringGantrisch):
+
+---
 
 ## Anwendung
 
-### Übersicht
+### Übersicht der Anwendung
 
-Hier Übersicht, wie die App aufgebaut ist. Screenshot der Hauptkomponente und Eingehen auf die verschiedenen Elemente.
+Die Anwendung besteht aus drei Haupttabs:
 
-### Auswahl der Analyse
+1. **Daten herunterladen**: Laden Sie die Daten basierend auf einem definierten Zeitraum und Photometer herunter.
+2. **Photometer Analyse**: Visualisieren und analysieren Sie die Messdaten.
+3. **Analyse Report**: Exportieren Sie Berichte über ausgewählte Analysen. (Diese Funktion ist nicht umgesetzt)
 
-Hier über die verschiedenen Auswahlmöglichkeiten. Datenbezug.. was passiert.. usw. wo werden die Daten gespeichert, welche Daten.. Wie kann man diese wieder löschen.
+---
 
-### Photometer Statistik
+### 1. Daten herunterladen
 
-Was für Statistiken sind möglich, eventuell eingehen auf die verwendeten Formeln. Legenden der Statistiken erklären
+In diesem Tab können Sie Messdaten aus einem definierten Zeitraum abrufen:
 
-### Report
+- **Zeitraum-Auswahl**: Wählen Sie über den **Datumsbereich-Selektor** einen Zeitraum aus.
+- **Photometer-Auswahl**: Wählen Sie über die **Metadatentabelle** einen oder mehrere Photometer aus.
+- **Daten herunterladen**: Drücken Sie den Button **Daten herunterladen**, um die Daten in einer Tabelle anzuzeigen.
+- **Statusbereich**: Statusmeldungen werden im **Statusbereich** angezeigt, um den Status des Downloads zu überwachen.
 
-Wie man ein Report generiert.
+---
 
-### Ich bin nicht so im Game... eventuell noch weitere Anwendungsfälle
+### 2. Photometer Analyse
+
+Im **Photometer Analyse**-Tab können Sie aus verschiedenen Analysen wählen:
+
+#### Auswahlmöglichkeiten
+
+- **Photometer Statistik**: Zeigt detaillierte Statistiken zu den gesammelten Daten an.
+- **Analyse pro Jahr**: Histogramme der Daten eines oder mehrerer Jahre.
+- **Analyse pro Monat**: Grafiken für monatliche Messwerte (Minimum, Maximum).
+- **Analyse Einzelnächte**: Detailanalysen einzelner Nächte.
+- **Photometer Vergleich**: Vergleicht Daten von zwei ausgewählten Photometern. (Diese Funktion ist nicht umgesetzt)
+
+#### Bedienung
+
+- **Analyse Typ wählen**: Nutzen Sie die Dropdown-Menüs, um den gewünschten Analysemodus und die entsprechenden Parameter (z. B. Jahr, Monat, Photometer) auszuwählen.
+- **Dynamische Visualisierungen**: Die Hauptanzeige zeigt die relevanten Diagramme und Analysen basierend auf Ihrer Auswahl.
+
+### 2. Photometer Analyse - Berechnungen
+
+#### Photometer Statistik
+
+#### Analyse pro Jahr
+
+#### Analyse pro Monat
+
+#### Analyse Einzelnächte
+
+---
+
+### 3. Analyse Report
+
+
+
+---
+
+## Dokumentation und Support
+
+Weitere Dokumentation und Hilfestellung finden Sie unter:
+
+- [Anleitung zur Bedienung](https://nachthimmel-monitoring-gantrisch-docs.vercel.app/bedienungsanleitung)
+- [GitHub Repository](https://github.com/NachthimmelMonitoringGantrisch/NachthimmelMonitoringGantrisch)
+
+---
