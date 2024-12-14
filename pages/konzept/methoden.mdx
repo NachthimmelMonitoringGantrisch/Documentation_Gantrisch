@@ -1,0 +1,54 @@
+# Methoden und Vorgehen
+
+<li>Strategie: Welche strategische Ausrichtung wird gewählt, um die Ziele zu erreichen?</li>
+<li>Methode: Welche spezifischen Methoden oder Ansätze sollen zur Zielerreichung genutzt werden (z.B. agile Entwicklung, iterative Prozesse)?</li>
+<li>Zeitrahmen: Welche zeitlichen Meilensteine gibt es? Wie wird der Fortschritt überwacht?</li>
+
+# Architekturentwurf (Nando)
+
+Das dargestellte Architekturdiagramm in Abbildung 1 visualisiert den Aufbau einer containerisierten Webanwendung zur Analyse von Lichtverschmutzungsdaten, die durch das TESS Photometer Network bereitgestellt werden. Die Anwendung besteht aus mehreren Komponenten, die in Docker-Containern isoliert laufen und über eine SQLite-Datenbank miteinander kommunizieren.
+
+![Architekturentwurf lokales Programm Nachthimmelmonitoring](/concept/Server_Architecture_Gantrisch.png)
+
+# Architecture Decision Records
+
+## Entscheidung – Methode der Datenschnittstelle (Fabian, Silas, Nando)
+
+Anforderungen an die Datenschnittstelle: Es wird eine zuverlässige Lösung für den Bezug der Photometer Daten gesucht. Für die Darstellung der Daten werden mehrere Grafiken erstellt. Diese Grafiken erfordern eine enorme Datengrundlage und stellen somit auch hohe Anforderungen an die Ressourcen der Datenschnittstelle.
+
+| Kriterium               | Nextcloud / TESS-IDA-Tools                                                                           | Rest-API                                                  |
+|:------------------------|:-----------------------------------------------------------------------------------------------------|:----------------------------------------------------------|
+| Leistung                | Höhere Ressourcen                                                                                    | Begrenzte Ressourcen                                      |
+| Anzahl Abfragen erlaubt | Ab Datenbank unbegrenzt                                                                              | Begrenzt möglich                                          |
+| Anzahl Abfragen nötig   | Sehr viele, besonders bei Vergleich von Sensoren über grossen Zeitraum                               |                                                           |
+| Datenbezug              | Einmal pro Projektinitialisierung und tägliches Update                                               | Pro Sensor und pro Darstellung                            |
+| Aufwand Integration     | Komplexere Einbindung (SQLite-Datenbank)                                                             | Simpel, jedoch viele Abfragen                             |
+| Verlässlichkeit         | Abhängig von Clouddienst für Initialisierung und Bezug von aktuellen Daten                           | Abhängig vom Webdienst                                    |
+| Skalierbarkeit          | Benötigte Ressourcen steigen pro User, Anzahl Darstellungen haben keinen Einfluss auf die Ressourcen | Benötigte Ressourcen steigen pro User und pro Darstellung |
+
+**Fazit:** Der Datenbezug soll mit der Datenschnittstelle Nextcloud / TESS-IDA-Tools erfolgen. Ausschlaggebend ist, dass zu viele Abfragen mit der REST-API nötig wären, um die gewünschten Darstellungen aufzubereiten. Jedoch wurde darauf hingewiesen, die REST-API nicht maximal zu belasten, da die Ressourcen der Server von STARS4ALL begrenzt sind.
+
+**Alternative:** Eine MQTT-Schnittstelle, spezifisch für IoT-Netzwerke, würde ebenfalls eine Live-Datenabfrage mit guter Performance anbieten. Vorteil ist die schnelle und unkomplizierte Einbindung in Grafana. (Allerdings ist diese Schnittstelle mit der Verwendung eines Grafana-Dashboards verknüpft.) Innerhalb des Grafanadashboards sind die Möglichkeiten der Individualisierung bezüglich der Darstellung nicht bekannt. 
+
+Da zum jetzigen Zeitpunkt nicht klar ist, welche Komponenten Grafana individualisierbar sind, wird die eine unabhängige Web-Anwendung, z.B. mit React, bevorzugt.
+
+**Entscheidung:** Die Daten werden über die Nextcloud mittels TESS-IDA-Tools bezogen. Entscheidung vom 23.10.2024.
+
+## Entscheidung – Methode der Datenvisualisierung (Nando)
+
+Die Einbindung der Daten muss mit einer der genannten Datenschnittstellen möglich sein. Die Darstellung der Photometer Daten soll intuitiv und simpel gestaltet werden, sodass die möglichen Interaktionen klar verständlich sind. Für die Umsetzung soll ein Tool gewählt werden, welches die Umsetzung der Ziele mit einem sinnvollen Aufwand ermöglicht.
+
+| Kriterium              | Grafana Dashboard                                             | R + Shiny                                             | Python + JS + React                                    |
+|:-----------------------|:--------------------------------------------------------------|:------------------------------------------------------|:-------------------------------------------------------|
+| Vorwissen              | Keine                                                         | Keine, Grundlagen von R vorhanden                     | Vorwissen von 2 Semestern                              |
+| Aufwand                | Gering, besonders für IoT-Schnittstellen wie MQTT -> Echtzeit | Hoher Aufwand, hohe Komplexität bei vielen Funktionen | Geringer Grundaufwand, hoher Aufwand für Detaillierung |
+| Individualisierbarkeit | Eingeschränkt                                                 | Für Analysen sehr hoch, für User Interface normal     | Sehr hoch                                              |
+| Flexibilität           | Unter Umständen eingeschränkt                                 | Hoch                                                  | Keine Grenzen                                          |
+| Interaktivität         | Gut für Standard-Dashboards                                   | Hoch, frei programmierbar                             | Hoch, frei programmierbar                              |
+| Ökosystem              | Integriertes All-in-One-Tool, kostenpflichtig?                | Offenes System, R-Pakete                              | Offenes System, Frameworks und Libraries               |
+| Skalierbarkeit         | unbekannt                                                     | Code von Beginn besser strukturieren -> mehr Aufwand  | Code von Beginn besser strukturieren -> mehr Aufwand   |
+| Reproduzierbarkeit     | Einfach                                                       | Mehr Aufwand, gute Dokumentation                      | Mehr Aufwand, gute Dokumentation                       |
+
+**Fazit:** Die geforderte Datenaktualität beschränkt sich auf die Daten des letzten Monats. Aufgrund dieser Forderung ist es nicht nötig, die MQTT-Schnittstelle, welche tagesaktuelle Daten liefert, zu verwenden. Deshalb rückt die Erstellung eines Grafana-Dashboards in den Hintergrund. Auch bezüglich der Skalierbarkeit beziehen sich die Erwartungen auf ein lokales Computerprogramm, welches lokal gestartet werden kann und nicht von einer großen Menge an Benutzern angesteuert wird.
+
+**Entscheidung:** Die Verknüpfung verschiedener Module/Libraries und die Einbindung in Docker-Container ist eine Anforderung mit hoher Priorität, da eine lokale und reproduzierbare Lösung mit Docker ermöglicht wird. Aufgrund dieser Anforderungen stehen die beiden Methoden R + Shiny und JavaScript + React zur Verfügung. Die Daten der Photometer bestehen nur zu einem kleinen Teil aus Geodaten und haben deshalb mehr Bezug zur Data Science. Mit Orientierung an den Daten und den bisherigen Vorlesungen wurde entschieden, die Visualisierungsmethode R + Shiny zu verwenden. Entscheidung vom 23.10.2024.
