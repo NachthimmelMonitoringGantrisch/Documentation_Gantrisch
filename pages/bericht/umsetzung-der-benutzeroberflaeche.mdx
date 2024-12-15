@@ -1,0 +1,42 @@
+# Umsetzung der Benutzeroberfläche
+
+In diesem Kapitel wird die Benutzeroberfläche beschrieben und der angedachte Bedienungsablauf erläutert. Die Plattform wird speziell für die Analyse von Photometer Daten, gemäss den Anforderungen des Naturpark Gantrisch entwickelt. Die Plattform ermöglicht aber auch die Analyse von Messdaten aller anderen Photometern des TESS-Netzwerks. Die Plattform wird mit der Bibliothek Shiny in der Programmiersprache R erstellt.
+
+## Beschreibung der Benutzeroberfläche
+
+Die lokale Plattform beinhaltet die folgenden drei Funktionalitäten als Registerkarte; „Daten herunterladen“, „Photometer Analyse“ und „Analyse Report“. Bevor eine Analyse durchgeführt werden kann, muss eine Datengrundlage vorhanden sein. Damit die Plattform Speicherplatz schonend und spezifisch für einzelne Photometer verwendet werden kann, müssen die Nutzenden die gewünschten Daten für die Analyse in der Registerkarte „Daten herunterladen“ herunterladen. Die heruntergeladenen Daten können in der Registerkarte „Photometer Analyse“ mittels vordefinierter Visualisierungen betrachtet und analysiert werden. Als weitere Funktionalität und im Ablauf als dritte Registerkarte ist der „Analyse Report“ angedacht.
+
+In der **Abbildung 4** ist die Startseite nach der Initialisierung sichtbar. Im Header ist die aktive Registerkarte farblich hervorgehoben. Die Tabelle der Metadaten wird angezeigt. Es besteht die Möglichkeit einen spezifischen Photometer über das Suchfeld anzuzeigen. Die Photometer können in der Tabelle selektiert werden. Das Feld links dient der Angabe des Zeitraums für den Datenbezug. Der Button „Daten herunterladen“ startet den Hintergrundprozess des Datenbezugs. Direkt unter dem Button befindet sich der Statusbereich für Fehler- und Prozessmeldungen.
+
+![Abbildung4](/documentary/startseite_plattfomr_4.png)
+**Abbildung 4**: Startseite der Plattform nach kurzer Initialisierungsphase. Aktive Registerkarte „Daten herunterladen“ mit angezeigter Metadatentabelle und Eingabefeldern für die Nutzenden.
+
+Jede Registerkarte verwendet ein Seitenleisten-Layout, um anpassbare Steuerelemente und Filter, wie z. B. Zeitbereichsfilter und Dropdown-Menüs darzustellen. Wichtige Inhalte, wie interaktive Tabellen und bedingte Diagramme, werden im zentralen Bereich angezeigt und füllen den gesamten Bereich aus. Die Verwendung dynamischer Elemente gewährleistet eine anpassungsfähige Oberfläche, die sich an den Bedürfnissen des Nutzers orientiert. Die **Abbildung 5** zeigt die aktive Registerkarte „Photometer Analyse“. In der Nutzereingabe wird der Analyse Typ „Analyse pro Monat“ gewählt. Anhand der Nutzereingaben werden die Visualisierungen im Hauptbereich angepasst.
+
+![Abbildung5](/documentary/Photometer_Analyse_5.png)
+**Abbildung 5**: Plattform mit aktiver Registerkarte „Photometer Analyse“. In der Seitenleiste werden alle Nutzereingaben in Form von Dropdowns dargestellt. Im Hauptbereich die Visualisierungen der „Analyse pro Monat“.
+
+## Benutzererfahrung und Bedienungsablauf
+
+Das Ziel der Benutzeroberfläche ist es, für alle Benutzenden so einfach wie möglich navigierbar zu sein. Aus diesem Grund wurde beschlossen, dass die interaktiven Elemente der Plattform in einer Reihenfolge von links nach rechts und von oben nach unten zu bedienen sind.
+
+Nach der Initialisierung der App werden die Nutzenden auf die Seite zum Daten herunterladen geleitet. Hier muss gewartet werden, bis die Daten und Metadaten in der Datenbank initialisiert sind. Der Fortschritt wird über einen Ladebalken angezeigt. Auf der linken Seite befindet sich eine Schnittstelle, über die das Zeitintervall angeben wird. Anschliessend kann der Datenbezug gestartet werden.
+
+Auf der rechten Seite kann zur Seite der Photometer-Analyse gewechselt werden. In diesem Bereich kann einer von fünf Anzeigetypen ausgewählt werden. Jeder Anzeigetyp erfordert einen eigenen Datensatz, und das Zeitintervall, das analysiert werden soll, muss angegeben werden. Die Intervalle reichen von einzelnen Monaten bis zu einem Jahr. Ausserdem muss das zu analysierende Photometer ausgewählt werden.
+
+Für eine möglichst speditive Nutzung der Analyse Funktion, werden die rechenintensiven Prozessierungen und Filterungen im Hintergrund der Registerkarte „Daten herunterladen“ erledigt. Somit ist die Ladezeit der Visualisierungen kürzer.
+
+Im letzten Abschnitt, wenn in den Registerkarten weiter nach rechts gegangen wird, gelangt man auf die Seite „Analyse Report“. In dieser Registerkarte wäre es möglich, ein Dokument zu erstellen, welches verschiedenen Analysen Typen und deren Berechnungen enthält. Die Funktion der der Registerkarte „Analyse Report“ ist nicht umgesetzt.
+
+Damit die Nutzenden in Echtzeit erkennen, ob die Plattform eine Berechnung oder Aktualisierung durchführt, werden ein Ladebalken und ein animiertes Bild angezeigt. In der **Abbildung 6** sind die beiden Elemente sichtbar.
+
+![Abbildung6](/documentary/Aktualisierungsprozess_6.png)
+**Abbildung 6**: Startseite der Plattform mit aktiver Registerkarte „Daten herunterladen“ und laufender Aktualisierung der Metadaten Tabelle. Anzeige animiertes Bild im Hauptbereich. Beschreibung des Aktualisierungsprozess unterhalb des Ladebalkens.
+
+## Fehlinteraktionen und Statusbereich
+
+Der Statusbereich unterhalb der Nutzereingabe dient der Kommunikation von Hinweisen oder Fehlern. In diesem Bereich werden Fehlermeldungen der externen Bestandteile wie „TESS-IDA-TOOLS“ angezeigt. Warnungen aufgrund einer Fehlinteraktion des Nutzenden werden nicht im Statusbereich angezeigt. Fehlinteraktionen werden mittels Begrenzung und Blockierung der Nutzereingabe verhindert. Bei der Auswahl der Zeitspanne für den Download wird beispielsweise die Eingabe von zukünftigen Daten blockiert und auch die Auswahl eines Enddatums vor dem Startdatum ist nicht möglich.
+
+Bei der Registerkarte „Photometer Analyse“ erscheinen Fehlermeldungen bezüglich der Messdaten direkt im Bereich der Visualisierungen. So zum Beispiel, wenn Daten eines Photometers vorhanden sind, aber nicht den Bedingungen entsprechen. Dann erscheint eine Meldung wie „Keine Nacht mit max. MSAS > 21.3 mag/arcsec2 gefunden“
+
+Die Auswahl der Photometer in der Metadatentabelle ist nicht direkt ersichtlich und kann zu einer Fehlinteraktion führen. Wenn ohne eine Photometer Auswahl auf „Daten herunterladen“ geklickt wird, erscheint eine Fehlermeldung „Fehler: Es wurde kein Photometer ausgewählt.“ Aus dieser Fehlermeldung soll erkannt werden, dass in der Tabelle der gewünschte Photometer ausgewählt werden muss.

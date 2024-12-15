@@ -7,6 +7,10 @@
     "title": "Backend und Hintergrundprozesse ",
     "order": 5
   },
+  "umsetzung-der-benutzeroberflaeche": {
+    "title": "Umsetzung der Benutzeroberfläche ",
+    "order": 6
+  },
   "projekt": { "title": "Projekt", "order": 9 },
   "reflektion": { "title": "Reflektion", "order": 10 },
   "fazit": { "title": "Fazit", "order": 11 }
