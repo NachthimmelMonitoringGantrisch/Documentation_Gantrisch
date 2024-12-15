@@ -3,7 +3,7 @@
 Um die Rohdaten der Photometer direkt und aktuell aus der Nextcloud zu beziehen und die vorprozessierten Daten einheitlich in eine Datenbank zu importieren, werden mehrere Hintergrundprozesse in die Plattform implementiert. Für den Datenbezug wird die bestehende Bibliothek „TESS-IDA-TOOLS“ von STARS4ALL genutzt. Die Hintergrundprozesse werden entweder durch einen manuellen Aufruf oder automatisch beim Start der Plattform aktiviert. Alle Hintergrundprozesse basieren auf Python-Skripts, die kontextabhängig im richtigen Zeitpunkt ausgeführt werden. Die Abhängigkeiten zwischen den Python Skripts und den externen Tools werden in der **Abbildung 3** visualisiert.
 
 ![Abbildung1](/documentary/20241211_Server_Achitecture_Gantrisch_3.png)
-**Abbildung 3**: Visualisierung der Hintergrundprozesse und externen Schnittstellen. Es werden schematisch die Abhängigkeiten dargestellt und es ist sichtbar welche Funktion die einzelnen Python-Skripts haben
+**Abbildung 3:** Visualisierung der Hintergrundprozesse und externen Schnittstellen. Es werden schematisch die Abhängigkeiten dargestellt und es ist sichtbar welche Funktion die einzelnen Python-Skripts haben
 
 Die beiden externen Tools „TESS API“ und „TESS-IDA-TOOLS“ werden als Schnittstelle für den Datenbezug verwendet. Die Datenstruktur der Meta- sowie Messdaten wird ebenfalls in der Visualisierung dargestellt. Alle Python Skripts werden aufgelistet und deren Funktionen werden beschrieben. In der **Abbildung 3** ist zu sehen welche Daten die Skripts beziehen und bei welcher Aktion in der Plattform die Skripts aufgerufen werden. Die einzelnen Komponenten des Backend werden in den folgenden Unterabschnitten detailliert beschrieben.
 
@@ -46,7 +46,7 @@ Vor jedem Messdatenimport in die Datenbank „TessNetwork_data.db“, wird ein E
 | stars289_2024-10       | 27.11.2024       | Vollständig   | Name of the resource                                   |
 | stars289_2024-11       | 27.11.2024       | Unvollständig | Messdaten von 27.11.2024 bis und mit 30.11.2024 fehlen |
 
-**Tabelle 2**: Vereinfachtes Beispiel der Kontroll-Tabelle des Daten Imports
+**Tabelle 2:** Vereinfachtes Beispiel der Kontroll-Tabelle des Daten Imports
 
 Mit Hilfe der Messdaten wäre es auch möglich anzugeben, ob diese vollständig sind oder nicht. Die Abfrage über diese Kontroll-Tabelle „data_control_table“ ist jedoch schneller, als wenn jede Zeile der Messdaten überprüft werden muss.
 
