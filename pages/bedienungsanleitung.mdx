@@ -54,30 +54,32 @@ Im **Photometer Analyse**-Tab können Sie aus verschiedenen Analysen wählen:
 - **Analyse Typ wählen**: Nutzen Sie die Dropdown-Menüs, um den gewünschten Analysemodus und die entsprechenden Parameter (z. B. Jahr, Monat, Photometer) auszuwählen.
 - **Dynamische Visualisierungen**: Die Hauptanzeige zeigt die relevanten Diagramme und Analysen basierend auf Ihrer Auswahl.
 
-
 ### Photometer Statistik
 
 #### **Erster Plot: "Jährliche Anzahl der Nächte nach Bedingung"**
+
 **Beschreibung**:  
 Dieser Plot zeigt die jährliche Anzahl von Nächten, die **zwei Bedingungen** erfüllen:
 
-- **Lila Balken**: Nächte, bei denen **90% der Himmelstemperatur < 0°C** liegen.  
+- **Lila Balken**: Nächte, bei denen **90% der Himmelstemperatur < 0°C** liegen.
 - **Orange Balken**: Nächte, bei denen der maximale MSAS-Wert (Himmelshelligkeit) **> 21.3** ist.
 
-**Bedingungen für die Filterung der Nächte**:  
-- `astronomical_night == 1` → Nur astronomische Nächte werden berücksichtigt.  
-- `sky_temperature < 0` → Himmelstemperatur liegt unter 0°C.  
+**Bedingungen für die Filterung der Nächte**:
+
+- `astronomical_night == 1` → Nur astronomische Nächte werden berücksichtigt.
+- `sky_temperature < 0` → Himmelstemperatur liegt unter 0°C.
 - `moon_illumination < 0.3` → Nächte mit geringer Mondbeleuchtung (unter 30%).
 
-**Berechnung**:  
-1. Für jede Nacht (`night_id`) wird der höchste MSAS-Wert berechnet.  
-2. Nächte, die die oben genannten Bedingungen erfüllen, werden gezählt.  
+**Berechnung**:
+
+1. Für jede Nacht (`night_id`) wird der höchste MSAS-Wert berechnet.
+2. Nächte, die die oben genannten Bedingungen erfüllen, werden gezählt.
 3. Die Ergebnisse werden pro **Jahr** aggregiert.
 
 ##### Definition der Nachtzeit
 
-Die Nacht ist definiert als der Zeitraum, der um 16:00 Uhr UTC am angegebenen Tag beginnt und um 09:00 Uhr UTC am folgenden Tag endet. 
-Dieser Ansatz ermöglicht es, sowohl die Abend- als auch die frühen Morgenstunden einzubeziehen. 
+Die Nacht ist definiert als der Zeitraum, der um 16:00 Uhr UTC am angegebenen Tag beginnt und um 09:00 Uhr UTC am folgenden Tag endet.
+Dieser Ansatz ermöglicht es, sowohl die Abend- als auch die frühen Morgenstunden einzubeziehen.
 Ist der Tag der letzte des Monats, wird die Frist bis zum nächsten Tag verlängert.
 
 ```r
@@ -95,7 +97,7 @@ if (day == days_in_month(ymd(paste(year, month, "01")))) {
 
 ##### Filtern von Daten
 
-Die Daten werden so gefiltert, dass nur die Daten für den Nachtzeitraum und gültige **MSAS**-Werte (positiv und ungleich Null) berücksichtigt werden. 
+Die Daten werden so gefiltert, dass nur die Daten für den Nachtzeitraum und gültige **MSAS**-Werte (positiv und ungleich Null) berücksichtigt werden.
 Darüber hinaus wird der Zeitraum der **astronomischen Nacht** ermittelt, der als die Zeit definiert ist, in der die Höhe der Sonne (`sun_alt`) weniger als -18° beträgt.
 
 ```r
@@ -117,7 +119,7 @@ night_intervals <- df_night %>%
 
 ##### Temperaturbereiche unter 0°C
 
-Intervalle, in denen die Himmelstemperatur (**sky_temperature**) unter 0°C liegt, werden identifiziert und zu kontinuierlichen Segmenten gruppiert. 
+Intervalle, in denen die Himmelstemperatur (**sky_temperature**) unter 0°C liegt, werden identifiziert und zu kontinuierlichen Segmenten gruppiert.
 Nur Intervalle mit einer Dauer von mindestens **30 Minuten** werden als gültig angesehen.
 
 ```r
@@ -143,7 +145,7 @@ df_grouped <- df_night %>%
 
 ##### Bortle-Skala
 
-Die Qualität des Nachthimmels wird anhand der **Bortle-Skala** klassifiziert, die **MSAS**-Werte (mag/arcsec²) mit Himmelsqualitätsstufen verknüpft. 
+Die Qualität des Nachthimmels wird anhand der **Bortle-Skala** klassifiziert, die **MSAS**-Werte (mag/arcsec²) mit Himmelsqualitätsstufen verknüpft.
 Jede Ebene ist durch eine bestimmte Farbe gekennzeichnet, was die Visualisierung und Interpretation erleichtert.
 
 ```r
@@ -151,7 +153,7 @@ Jede Ebene ist durch eine bestimmte Farbe gekennzeichnet, was die Visualisierung
 bortle_scale <- data.frame(
   min_msas = c(21.90, 21.50, 21.30, 20.80, 20.10, 19.10, 18.00, -Inf),
   max_msas = c(Inf, 21.90, 21.50, 21.30, 20.80, 20.10, 19.10, 18.00),
-  color = c("#2E2E2E", "#404040", "#0000FF", "#00FF00", "#FFFF00", 
+  color = c("#2E2E2E", "#404040", "#0000FF", "#00FF00", "#FFFF00",
             "#FFA500", "#FF0000", "#FFFFFF"),
   bortle_class = c("1", "2", "3", "4", "4.5", "5", "6-7", "8-9")
 )
@@ -161,13 +163,13 @@ bortle_scale <- data.frame(
 
 ##### Erstellung der Grafik
 
-Das Diagramm kombiniert MSAS-Daten mit Informationen der Bortle-Skala und Temperaturbereichen unter dem Gefrierpunkt. 
+Das Diagramm kombiniert MSAS-Daten mit Informationen der Bortle-Skala und Temperaturbereichen unter dem Gefrierpunkt.
 Darüber hinaus werden astronomische Nachtzeiten angezeigt, um die wichtigsten Momente der Himmelsqualität hervorzuheben.
 
 ```r
 # Erstellung von Diagrammen für die Nächte in einem Monat
 p <- ggplot() +
-  geom_rect(data = bortle_scale, aes(xmin = start_datetime, xmax = end_datetime, ymin = min_msas, ymax = max_msas, fill = bortle_class), 
+  geom_rect(data = bortle_scale, aes(xmin = start_datetime, xmax = end_datetime, ymin = min_msas, ymax = max_msas, fill = bortle_class),
             alpha = 0.1, inherit.aes = FALSE) +
   geom_line(data = df_night, aes(x = time, y = msas), color = "black", size = 1) +
   {if (nrow(df_grouped) > 0) {
@@ -186,38 +188,47 @@ p <- ggplot() +
   labs(title = paste("MSAS für", sprintf("%02d", day), month.abb[month], year), x = "Zeit", y = "MSAS [mag/arcsec²]") +
   theme_minimal()
 ```
+
 ---
 
 ##### Resultate
 
 Die folgende Grafik zeigt die Ergebnisse der Einzelnächte-Analyse für den Monat Dezember, einschliesslich der MSAS-Werte, der Temperaturbereiche unter 0°C und der astronomischen Nachtzeiten.
 
-![Ergebnisgrafik](/images/Einzelnächte.png)
+![Ergebnisgrafik](/manual/Einzelnaechte.png)
 
 ---
 
-#### **Zweiter Plot: "Anteil der Nächte mit max MSAS > 21.3 im Verhältnis zu Nächten mit Himmelstemperatur < 0°"**
+#### **Zweiter Plot:**
+
+Anteil der Nächte mit max MSAS > 21.3 im Verhältnis zu Nächten mit Himmelstemperatur < 0°
+
 **Beschreibung**:  
 Dieser Plot zeigt den **prozentualen Anteil** der Nächte, bei denen der maximale MSAS-Wert > 21.3 ist, im Vergleich zu kalten Nächten.
 
-- **Darstellung**: Ein **kurzer Strich** pro Jahr visualisiert den Anteil.  
-- **Trendlinie**: Eine gestrichelte Linie zeigt ab einem Datenvorkommen von drei Jahren den linearen Trend.  
+- **Darstellung**: Ein **kurzer Strich** pro Jahr visualisiert den Anteil.
+- **Trendlinie**: Eine gestrichelte Linie zeigt ab einem Datenvorkommen von drei Jahren den linearen Trend.
 
-**Berechnung**:  
-- Nächte mit **90% der Himmelstemperatur < 0°C** gelten als **kalte Nächte**.  
-- Anteil (%) = \( \frac{\text{Anzahl der Nächte mit MSAS > 21.3}}{\text{Anzahl der kalten Nächte}} \times 100 \).
+**Berechnung**:
+
+- Nächte mit **90% der Himmelstemperatur < 0°C** gelten als **kalte Nächte**.
+
+- `Anteil (%) = \( \frac{\text{Anzahl der Nächte mit MSAS > 21.3}}{\text{Anzahl der kalten Nächte}} \times 100 \)`
 
 ---
 
-### **Zusammenfassung**  
-Der Plot visualisiert:  
-1. **Absolute Anzahl** dunkler und kalter Nächte pro Jahr.  
+### **Zusammenfassung**
+
+Der Plot visualisiert:
+
+1. **Absolute Anzahl** dunkler und kalter Nächte pro Jahr.
 2. **Anteil** der besonders dunklen Nächte (MSAS > 21.3) im Vergleich zu kalten Nächten.
 
-**Filterbedingungen**:  
-- Nur astronomische Nächte.  
-- Himmelstemperatur < 0°C.  
-- Mondbeleuchtung < 30%. 
+**Filterbedingungen**:
+
+- Nur astronomische Nächte.
+- Himmelstemperatur < 0°C.
+- Mondbeleuchtung < 30%.
 
 ### Analyse pro Jahr
 
@@ -229,13 +240,9 @@ Der Plot visualisiert:
 
 ## 3. Analyse Report
 
-
-
 ---
 
 ## Erweiterungsmöglichkeiten
-
-
 
 ---
 
