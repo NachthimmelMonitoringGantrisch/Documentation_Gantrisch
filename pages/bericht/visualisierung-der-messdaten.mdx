@@ -1,0 +1,114 @@
+# Visualisierung der Messdaten
+
+Bevor Daten überhaupt verarbeitet und für den Endnutzer als Kommunikationsvisualisierung dargestellt werden können, zuerst müssen die Rohdaten kennengelernt werden. Um das Verhalten, Auffälligkeiten und Zusammenhänge in Daten erkennen zu können werden [Erkundungsvisualisierungen](#Erkundungsvisualisierungen) erstellt und anhand eines Beispiels die Zusammenhänge der Daten erklärt.
+
+## Erkundungsvisualisierungen
+
+Die Attributwerte der Flächenhelligkeit „MSAS“ und der Himmelstemperatur „tSky“ haben gemäss Nicole Dahinden einen Zusammenhang (Dahinden 2024). Der Attributwert der Himmelstemperatur kann für die Beurteilung einer klaren Nacht verwendet werden. Erst bei einer Himmelstemperatur unter 0° Celsius, können die Messwerte der Flächenhelligkeit beachtet werden. Bei einer Himmelstemperatur über 0° Celsius ist es sehr wahrscheinlich, dass die Bewölkung oder der Nebel die Werte der Flächenhelligkeit beeinflussen. Ein bewölkter Himmel kann somit dunkler wirken, als dieser gemäss Bortle-Skala eigentlich ist (STARS4ALL 2024b).
+
+Anhand der Erkundungsvisualisierung in Abbildung 7 kann der Zusammenhang zwischen den beiden Attributen Flächenhelligkeit und Himmelstemperatur erkannt werden. Es werden die Anzahl Dateneinträge pro „MSAS“ und pro „tSky“ zusammengefasst. Die aggregierten Datenpunkte werden in einem Raster mit einer Schrittweite von eins dargestellt. Eine Farbskala mit Graustufen visualisiert die Menge an Datenpunkten pro Rasterzelle. Diese Visualisierung wird separat für Daten aus drei verschiedenen Photometern erstellt, damit nicht nur das Muster eines Photometers beurteilt wird. Mit Hilfe dieser Erkundungsvisualisierungen und dem Hintergrundwissen kann gesagt werden, dass ein hoher Wert der Flächenhelligkeit nicht direkt einen dunklen Himmel gemäss der Bortle-Skala bedeutet. Es ist zu erkennen, dass kein klarer Unterschied zwischen den MSAS-Werten mit einer Himmelstemperatur unter und über 0° Celsius besteht.
+
+Es müssen somit mehrere Dateneinträge gemäss bestimmten Kriterien wie der Himmelstemperatur gefiltert werden, sodass keine Messungen einer bewölkten (nicht geeigneten) Nacht in die Kommunikationsvisualisierung mit einfliessen.
+
+![Abbildung7](/documentary/Himmelstemperatur_7.jpg)
+**Abbildung 7**: Erkundungsvisualisierung über die Korrelation der Flächenhelligkeit und der Himmelstemperatur in zusammengefassten Rasterzellen des Photometers stars926. Die Rasterzellen zeigen mit dem Grauwert die Anzahl an Messungen pro MSAS und Himmelstemperatur.
+
+Ein weiterer Einfluss auf die Helligkeit des Nachthimmels hat die Helligkeit des Mondes (STARS4ALL 2024b). Auch dieser Zusammenhang kann mit Hilfe einer Erkundungsvisualisierung verdeutlicht werden. In der Abbildung 8 werden die Zeitabschnitte mit einer Flächenhelligkeit über 21.3 mag/arcsec2 aufsummiert und pro Tag in einem Balkendiagramm dargestellt. Unterhalb wird die Mondphase in Prozent von 0 bis 1 (Leermond bis Vollmond) auf einer korrelierenden Achse dargestellt. Bei zunehmender Mondphase und um den Zeitpunkt des Vollmondes ist eine Abnahme der summierten Zeit mit einem MSAS-Wert über 21.3 mag/arcsec2 sichtbar.
+
+![Abbildung8](/documentary/Zeit_Nachthimmel8.jpg)
+**Abbildung 8:** Erkundungsvisualisierung - Zusammenhang Mondphase und Zeit pro Nacht mit MSAS über 21.3 mag/arcsec2
+
+Die Visualisierung in Abbildung 7 ist jedoch nicht nur als Erkundungsvisualisierung geeignet. Da auch das Analysieren der Daten in der entwickelten Plattform möglich sein sollte, können auch ursprüngliche Erkundungsvisualisierungen als Kommunikationsvisualisierung dienen. Die Vorteile und die genaue Beschreibung der Grafik werden im Kapitel 7.5 beschreiben.
+
+## Kommunikationsvisualisierungen
+
+Die Erkenntnisse aus den Erkundungsvisualisierungen werden für die Erstellung und Kombination von Kommunikationsvisualisierungen verwendet in der Anwendung. Die vordefinierten Visualisierungen der Plattform sollen eine vergleichbare und reproduzierbare Analysemöglichkeit bieten. Die Unterteilung der Visualisierungen in verschiedenen Zeitspannen (pro Jahr, pro Monat oder pro Tag) ermöglicht einen groben Überblick, aber auch die detaillierte Analyse von Daten einer Nacht. Somit wird bei der Umsetzung und Implementierung der Visualisierungen auf das Prinzip „vom Grossen ins Kleine“ geachtet, von der Jahresübersicht bis hin zur Detailvisualisierung von einer Nacht. In den folgenden Kapitel 0 bis 7.7 werden die einzelnen Visualisierungen pro „Analyse Typ“ erklärt und deren Ziel erläutert.Die Erkenntnisse aus den Erkundungsvisualisierungen werden für die Erstellung und Kombination von Kommunikationsvisualisierungen verwendet in der Anwendung. Die vordefinierten Visualisierungen der Plattform sollen eine vergleichbare und reproduzierbare Analysemöglichkeit bieten. Die Unterteilung der Visualisierungen in verschiedenen Zeitspannen (pro Jahr, pro Monat oder pro Tag) ermöglicht einen groben Überblick, aber auch die detaillierte Analyse von Daten einer Nacht. Somit wird bei der Umsetzung und Implementierung der Visualisierungen auf das Prinzip „vom Grossen ins Kleine“ geachtet, von der Jahresübersicht bis hin zur Detailvisualisierung von einer Nacht. In den folgenden Kapitel 0 bis 7.7 werden die einzelnen Visualisierungen pro „Analyse Typ“ erklärt und deren Ziel erläutert.
+
+## Photometer Statistik – Jahresübersicht
+
+Als grobe Übersicht der Daten eines Photometers dient die Visualisierung „Photometer Statistik“. Die Nutzenden wählen ein Photometer aus und es wird eine Visualisierung über die gesamten verfügbaren Daten erstellt. In oberen Teil der Visualisierung in Abbildung 9 ist ein Säulendiagramm zu sehen. Die violetten Balken stellen die Anzahl an Nächten dar, die sich überhaupt für eine Messung der Helligkeit am Nachthimmel eignet. Es werden nur Daten innerhalb der astronomischen Nacht mit einbezogen. Es wird von einer geeigneten Nacht gesprochen, wenn die Himmelstemperatur 90% der Zeit der astronomischen Nacht unter 0° Celsius ist und sich der Wert der Mondphase unter 0.2 befindet. Die gelben Balken zeigen die Anzahl an Nächten, die einen maximalen MSAS-Wert von über 21.3 aufweisen und somit das Ziel erfüllen. Sodass das Verhältnis an Nächten, welche das Ziel erreicht haben, gegenüber den Nächten, welche für eine Messung geeignet waren, ersichtlich ist wird unterhalb eine zweite Visualisierung hinzugefügt. Im unteren Punktediagramm wird das Verhältnis an guten Nächten normalisiert dargestellt. Bei der Analyse von Daten über mehrere Jahre kann anhand dieser Visualisierung ein Trend festgestellt werden.
+
+![Abbildung9](/documentary/Photometer_Statistik9.png)
+**Abbildung 9:** Kommunikationsvisualisierung – Photometer Statistik (Jahresübersicht) mit prozentualem Anteil an Nächten pro Jahr innerhalb des Ziels
+
+## Analyse pro Jahr
+
+Nach der Betrachtung der Statistik über den gesamten Datensatz eines Photometers, kann die Anzahl an Nächten mit einem MSAS-Wert über 21.3 mag/arcsec2 pro Monat über die gewünschten Jahre angezeigt werden. In der Abbildung 10 kann erkannt werden, dass zum Beispiel im August im Jahr 2024 im Vergleich zu anderen Monaten weniger Nächte das Ziel erreicht haben. Um die Gründe für die tiefere Anzahl zu betrachten, kann ein Monat in der „Analyse pro Monat“ genauer betrachtet werden.
+
+![Abbildung10](/documentary/Analyse_pro_Jahr10.png)
+**Abbildung 10:** Kommunikationsvisualisierung des Analyse Typs „Analyse pro Jahr“ mit Anzahl an Nächten pro Monat innerhalb des Ziels.
+
+## Analyse pro Monat
+
+Hierarchisch folgt die Analyse eines einzelnen Monats. Diese besteht aus zwei Grafiken (Abbildung 11). In der oberen Grafik sind pro Nacht der höchste und tiefste MSAS-Wert ersichtlich. Die Linien, die sich daraus ergeben, zeigen den monatlichen Verlauf. Für den Vergleich ist im Hintergrund die Bortle-Skala sowie der Schwellwert von 21.3 mag/arcsec2 markiert.
+
+Die zweite Grafik darunter besteht aus einem Säulendiagramm. Dieses zeigt die Zeit, wie lange es in einer Nacht genügend dunkel war, also der MSAS-Wert über 21.3 mag/arcsec2 lag. Ergänzt wird sie von der Linie der Mondphase.
+Im Gesamten lässt sich daraus lesen, welche Nächte gute Daten zeigen. Die Mondphase gibt Rückschluss auf den Fall des maximalen MSAS-Werts, da der Nachthimmel dann einiges heller ist. Eine grosse Säule zeigt, welche einzelnen Nächte mit einem hohen maximalen MSAS-Wert auch über einen längeren Zeitraum genügend gut waren und näher betrachtet werden könnten.
+
+![Abbildung11](/documentary/Analyse_pro_Monat11.png)
+**Abbildung 11 :** Kommunikationsvisualisierungen des Analyse Typs „Analyse pro Monat“. Visualisierung besteht aus zwei Teilen; oben minimaler und maximaler MSAS Wert pro Nacht als Linie dargestellt. Im Hintergrund ist die Bortle-Skala hinterlegt, unten die aufsummierte Zeit pro Tag mit Messdaten innerhalb des Ziels. Korrelierend zu den Tagen die Mondphase als Linie.
+
+## Analyse der Einzelnächte
+
+Die folgenden Diagramme (Abbildung 12, Abbildung 13, Abbildung 15) zeigen die MSAS-Werte für eine einzige Nacht. Zusätzlich zu den MSAS-Werten enthalten die Diagramme Informationen über die Himmelstemperatur, die eine wichtige Rolle dabei spielt, ob die über der Ziellinie (21,3 mag/arcsec2) erzielten Werte plausibel sind. Damit dies der Fall ist, muss die Himmelstemperatur unter 0°C liegen.
+Es ist wichtig zu beachten, dass dies nicht die Endprodukte sind, sondern der Prozess und die Versuche, die unternommen wurden, um eine optimale Visualisierung zu erreichen.
+
+![Abbildung12](/documentary/Analyse_der_Einzelnaechte12.png)
+**Abbildung 12:** Grafik mit MSAS-Werten und Farbskala für die Himmelstemperatur
+
+Die Verwendung einer Farbskala zur Darstellung der Himmelstemperaturen verleiht den Daten mehr Tiefe und ermöglicht eine parallele Analyse von Temperaturschwankungen und MSAS-Werten. Dies erleichtert das Erkennen von Trends und Zusammenhängen zwischen den Parametern.
+
+Mit der Farbskala kann es schwierig sein, präzise zu bestimmen, ob die Temperatur unter 0°C liegt. Die Darstellung ist komplex und teilweise schwer zu lesen. Zudem liefert das Diagramm einzeln betrachtet nur begrenzte Aussagekraft.
+
+![Abbildung13](/documentary/Analyse_der_Einzelnaechte13.png)
+**Abbildung 13:** Grafik mit MSAS-Werten und binärer Linienanzeige für die Himmelstemperatur
+
+Die Segmentierung der Daten hebt Zeiträume unter 0°C deutlich hervor und ermöglicht eine präzise Darstellung spezifischer Zeitintervalle. Dies ist besonders vorteilhaft, um detaillierte Analysen durchzuführen und bestimmte Muster oder Ereignisse zu identifizieren.
+
+Die Segmentierung kann Probleme mit der Datenkontinuität aufweisen, insbesondere wenn die Temperaturen zwischen unter 0°C und über 0°C schwanken, was zu Lücken in der Darstellung führt. Es fehlen zudem Mindestzeitintervalle von 30 Minuten für Messungen unter 0°C, und das Diagramm liefert allein betrachtet nur begrenzte Informationen.
+
+![Abbildung14](/documentary/Analyse_der_Einzelnaechte13.png)
+**Abbildung 14:** Separate Grafik der MSAS-Werte für eine einzelne Nacht und binäre Anzeige der Himmelstemperatur.
+
+Die grünen Balken sind in einem separaten Diagramm dargestellt, was die visuelle Komplexität des Hauptdiagramms reduziert und für eine übersichtlichere Darstellung sorgt. Diese Struktur ermöglicht eine kombinierte Analyse von MSAS und Himmelstemperatur in geordneter Weise, wodurch spezifische Daten klarer hervorgehoben werden können.
+
+Die getrennte Darstellung hat weniger unmittelbare visuelle Wirkung, da die vollständige Interpretation der Daten das Betrachten von zwei Diagrammen erfordert. Zudem ist die Darstellung weniger intuitiv im Vergleich zu einer kombinierten Lösung und bringt Skalierungsprobleme zwischen den Diagrammen mit sich. Einzelbetrachtet liefert das Diagramm ausserdem begrenzte Informationen.
+
+![Abbildung15](/documentary/Analyse_der_Einzelnaechte13.png)
+**Abbildung 15:** Einzelne Grafik der MSAS-Werte für eine einzige Nacht mit binärer Anzeige der Himmelstemperatur.
+
+Die Darstellung der aggregierten Datenpunkte in einem Raster mit einer Schrittweite von 1 bietet klare Vorteile. Ein binäres System mit grünen Balken hebt Nachtzeiträume mit Temperaturen unter 0°C prägnant hervor, erleichtert die Analyse einzelner Nächte und fasst alle relevanten Daten kompakt in einer Grafik zusammen.
+
+Jedoch weist diese Methode Einschränkungen auf: Die exakten Temperaturwerte sind nicht ablesbar, und isoliert betrachtet liefert die Grafik nur begrenzte Informationen, die eine ergänzende Datenbasis erfordern.
+
+Die letztgenannte Variante ist diejenige, die als Visualisierung des Analyse Typs „Analyse der Einzelnächte“ eingeführt wurde, um eine einzige Nacht darzustellen. Trägt eine Nacht allein nicht zu einer aussagekräftigen Analyse bei, sodass sogenannte „small multiples“ erstellt werden. Bei dieser Darstellung von „small multiples“ wird jede Nacht eines Monats in einer gesamten Visualisierung einbezogen.
+
+## Analyse der Einzelnächte in einem Monat
+
+Die folgenden Diagramme (Abbildung 16 und Abbildung 17) zeigen die MSAS-Werte für alle Nächte eines Monats. Diese Übersicht ermöglicht es, Trends oder Anomalien zwischen verschiedenen Nächten zu erkennen und günstige Zeiträume für astronomische Beobachtungen zu vergleichen. Die Bilder wurden beschnitten, um einen Ausschnitt und nicht die gesamte Grafik darzustellen. Dies wurde gemacht, um eine klarere Darstellung im Bericht zu erhalten.
+
+![Abbildung16](/documentary/Einzelnaechte_in_einem_Monat16.png)
+**Abbildung 16:** Einzelne Grafik der MSAS-Werte für alle Nächte eines Monats
+
+Die Darstellung bietet eine kompakte Übersicht über den gesamten Monat, wodurch Trends und Muster auf einen Blick erkennbar sind.
+
+Die Visualisierung liefert keine Informationen über die Himmelstemperaturen, was eine detaillierte Analyse von Umweltbedingungen einschränkt. Ausserdem sind zu viele Labels auf den Achsen, die schwer zu lesen sind.
+
+![Abbildung17](/documentary/Einzelnaechte_in_einem_Monat16.png)
+**Abbildung 17:** Einzelne Grafik der MSAS-Werte für alle Nächte eines Monats mit binärer Anzeige der Himmelstemperatur.
+
+Das Diagramm bietet einen vollständigen Überblick über den MSAS-Trend für den gesamten Monat. Die grünen Balken heben Nächte mit Temperaturen unter 0°C hervor, was eine sofortige Identifizierung von günstigen Nächten für astronomische Beobachtungen ermöglicht. Es ist besonders hilfreich für den Vergleich zwischen verschiedenen Nächten.
+
+Die Darstellung kann aufgrund der grossen Datenmenge in einem einzigen Diagramm unübersichtlich werden. Um die Informationen korrekt zu interpretieren, ist zudem ein gewisses Verständnis der Legende und der verwendeten Symbole erforderlich.
+
+Diese letzte Grafik ist die Darstellung, die in das Dashboard implementiert wurde und die bei der Analyse einzelner Nächte erscheint.
+
+## Verbesserungen der Kommunikationsvisualisierungen
+
+Eine mögliche Verbesserung der Diagramme könnte darin bestehen, Extremwerte hervorzuheben. Dies würden die höchsten Werte oder allenfalls Anomalien der Daten visuell hervorheben.
+
+Die Verwendung von klareren oder vollständigeren Legenden könnte ebenfalls eine grosse Verbesserung bei der Darstellung von Diagrammen darstellen, da dies die Interpretation der dargestellten Daten noch einfacher machen würde.
+
+Die Berücksichtigung anderer Darstellungsformen, wie beispielsweise einheitliche Farben oder andere Formen, kann ebenfalls einen Mehrwert für die Visualisierung darstellen.
+
+Ausserdem könnten die korrespondierenden Achsen aufeinander abgestimmt werden, sodass zwei übereinanderliegende Diagramme besser verglichen werden können.

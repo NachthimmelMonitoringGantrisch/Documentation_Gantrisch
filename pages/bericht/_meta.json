@@ -11,6 +11,10 @@
     "title": "Umsetzung der Benutzeroberfläche ",
     "order": 6
   },
+  "visualisierung-der-messdaten": {
+    "title": "Visualisierung der Messdaten",
+    "order": 7
+  },
   "projekt": { "title": "Projekt", "order": 9 },
   "reflektion": { "title": "Reflektion", "order": 10 },
   "fazit": { "title": "Fazit", "order": 11 }
