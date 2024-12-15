@@ -16,9 +16,7 @@ Die Anleitung für die Installation finden Sie hier: [GitHub](https://github.com
 
 ---
 
-## Anwendung
-
-### Übersicht der Anwendung
+## Übersicht der Anwendung
 
 Die Anwendung besteht aus drei Haupttabs:
 
@@ -28,7 +26,7 @@ Die Anwendung besteht aus drei Haupttabs:
 
 ---
 
-### 1. Daten herunterladen
+## 1. Daten herunterladen
 
 In diesem Tab können Sie Messdaten aus einem definierten Zeitraum abrufen:
 
@@ -39,11 +37,11 @@ In diesem Tab können Sie Messdaten aus einem definierten Zeitraum abrufen:
 
 ---
 
-### 2. Photometer Analyse
+## 2. Photometer Analyse
 
 Im **Photometer Analyse**-Tab können Sie aus verschiedenen Analysen wählen:
 
-#### Auswahlmöglichkeiten
+### Analyse Typen
 
 - **Photometer Statistik**: Zeigt detaillierte Statistiken zu den gesammelten Daten an.
 - **Analyse pro Jahr**: Histogramme der Daten eines oder mehrerer Jahre.
@@ -51,24 +49,71 @@ Im **Photometer Analyse**-Tab können Sie aus verschiedenen Analysen wählen:
 - **Analyse Einzelnächte**: Detailanalysen einzelner Nächte.
 - **Photometer Vergleich**: Vergleicht Daten von zwei ausgewählten Photometern. (Diese Funktion ist nicht umgesetzt)
 
-#### Bedienung
+### Bedienung
 
 - **Analyse Typ wählen**: Nutzen Sie die Dropdown-Menüs, um den gewünschten Analysemodus und die entsprechenden Parameter (z. B. Jahr, Monat, Photometer) auszuwählen.
 - **Dynamische Visualisierungen**: Die Hauptanzeige zeigt die relevanten Diagramme und Analysen basierend auf Ihrer Auswahl.
 
-### 2. Photometer Analyse - Berechnungen
 
-#### Photometer Statistik
+### Photometer Statistik
 
-#### Analyse pro Jahr
+#### **Erster Plot: "Jährliche Anzahl der Nächte nach Bedingung"**
+**Beschreibung**:  
+Dieser Plot zeigt die jährliche Anzahl von Nächten, die **zwei Bedingungen** erfüllen:
 
-#### Analyse pro Monat
+- **Lila Balken**: Nächte, bei denen **90% der Himmelstemperatur < 0°C** liegen.  
+- **Orange Balken**: Nächte, bei denen der maximale MSAS-Wert (Himmelshelligkeit) **> 21.3** ist.
 
-#### Analyse Einzelnächte
+**Bedingungen für die Filterung der Nächte**:  
+- `astronomical_night == 1` → Nur astronomische Nächte werden berücksichtigt.  
+- `sky_temperature < 0` → Himmelstemperatur liegt unter 0°C.  
+- `moon_illumination < 0.3` → Nächte mit geringer Mondbeleuchtung (unter 30%).
+
+**Berechnung**:  
+1. Für jede Nacht (`night_id`) wird der höchste MSAS-Wert berechnet.  
+2. Nächte, die die oben genannten Bedingungen erfüllen, werden gezählt.  
+3. Die Ergebnisse werden pro **Jahr** aggregiert.
 
 ---
 
-### 3. Analyse Report
+#### **Zweiter Plot: "Anteil der Nächte mit max MSAS > 21.3 im Verhältnis zu Nächten mit Himmelstemperatur < 0°"**
+**Beschreibung**:  
+Dieser Plot zeigt den **prozentualen Anteil** der Nächte, bei denen der maximale MSAS-Wert > 21.3 ist, im Vergleich zu kalten Nächten.
+
+- **Darstellung**: Ein **kurzer Strich** pro Jahr visualisiert den Anteil.  
+- **Trendlinie**: Eine gestrichelte Linie zeigt ab einem Datenvorkommen von drei Jahren den linearen Trend.  
+
+**Berechnung**:  
+- Nächte mit **90% der Himmelstemperatur < 0°C** gelten als **kalte Nächte**.  
+- Anteil (%) = \( \frac{\text{Anzahl der Nächte mit MSAS > 21.3}}{\text{Anzahl der kalten Nächte}} \times 100 \).
+
+---
+
+### **Zusammenfassung**  
+Der Plot visualisiert:  
+1. **Absolute Anzahl** dunkler und kalter Nächte pro Jahr.  
+2. **Anteil** der besonders dunklen Nächte (MSAS > 21.3) im Vergleich zu kalten Nächten.
+
+**Filterbedingungen**:  
+- Nur astronomische Nächte.  
+- Himmelstemperatur < 0°C.  
+- Mondbeleuchtung < 30%. 
+
+### Analyse pro Jahr
+
+### Analyse pro Monat
+
+### Analyse Einzelnächte
+
+---
+
+## 3. Analyse Report
+
+
+
+---
+
+## Erweiterungsmöglichkeiten
 
 
 
