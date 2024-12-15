@@ -109,253 +109,251 @@ Der Plot visualisiert:
 - Mondbeleuchtung < 30%.
 
 ### Analyse pro Jahr
-Dieses Skript analysiert die von einem Photometer gesammelten Daten, um die jährlichen Trends bei der Qualität des Nachthimmels und der Temperatur zu untersuchen. Es identifiziert Nächte mit hoher Himmelsqualität (maximaler MSAS-Wert > 21,3) und solche, in denen die Himmelstemperatur überwiegend unter 0°C liegt. Schliesslich werden Diagramme erstellt, die die jährliche Verteilung und das Verhältnis dieser Nächte zeigen, um langfristige Veränderungen zu veranschaulichen. Schliesslich werden Diagramme erstellt, die die jährliche Verteilung und das Verhältnis dieser Nächte zeigen, um die langfristigen Veränderungen zu veranschaulichen.
 
-#### 1. Daten filtern
+#### Erster Plot: Jährliche Anzahl der Nächte nach Bedingung
 
-Die Daten werden gefiltert, um folgende Bedingungen einzubeziehen:
-- **Astronomische Nächte:** `astronomical_night == 1`
-- **Himmelstemperaturen unter 0°C:** `sky_temperature < 0`
+**Beschreibung**:  
+Dieser Plot zeigt die jährliche Anzahl von Nächten, die **zwei Bedingungen** erfüllen:
 
----
-
-#### 2. Jahr extrahieren
-
-Das Jahr wird aus der Zeit (`time`) extrahiert:  
-`Jahr = Jahr(as.POSIXct(time, Format = "%Y-%m-%d %H:%M:%S"))`
+- **Lila Balken**: Nächte, bei denen **90% der Himmelstemperatur < 0°C** liegen.
+- **Orange Balken**: Nächte, bei denen der maximale MSAS-Wert (Himmelshelligkeit) **> 21.3** ist.
 
 ---
 
-#### 3. Maximaler MSAS pro Nacht
+**Filterbedingungen für die Nächte**
 
-Für jede Nacht wird der maximale Helligkeitswert berechnet:  
-`max_msas = max(msas)`
-
----
-
-#### 4. Prozentsatz der Zeit unter 0°C
-
-Für jede Nacht wird der Prozentsatz der Zeit berechnet, in der die Temperatur des Himmels unter 0°C lag:  
-`sky_temp_below_zero_pct = (Summe(sky_temperature < 0) ÷ Anzahl der Messungen) × 100`
+- **Astronomische Nächte:** Nur Zeiträume, in denen der Himmel vollständig dunkel ist (`astronomical_night == 1`).
+- **Himmelstemperatur:** Nur Nächte mit Temperaturen unter 0°C (`sky_temperature < 0`).
 
 ---
 
-#### 5. Nächte mit MSAS > 21.3
+**Berechnungen**
 
-Die Anzahl der Nächte, in denen der maximale MSAS-Wert 21.3 überschreitet, wird berechnet:  
-`nights_over_21_3 = Summe(max_msas > 21.3)`
+1. **Maximale Helligkeit pro Nacht**:  
+   Für jede Nacht (`night_id`) wird der höchste gemessene MSAS-Wert berechnet:  
+   `max_msas = max(msas)`.
 
----
+2. **Prozent der Zeit mit Temperaturen unter 0°C**:  
+   Der Anteil der Zeit in einer Nacht, in der die Himmelstemperatur < 0°C lag:  
+   `sky_temp_below_zero_pct = (Summe(sky_temperature < 0) ÷ Anzahl der Messungen) × 100`.
 
-#### 6. Kalte Nächte (90% der Zeit unter 0°C)
+3. **Anzahl der Nächte mit MSAS > 21.3**:  
+   Nächte, bei denen `max_msas > 21.3`, werden gezählt:  
+   `nights_over_21_3 = Summe(max_msas > 21.3)`.
 
-Die Anzahl der Nächte, in denen mindestens 90% der Zeit die Himmelstemperatur unter 0°C lag, wird berechnet:  
-`nights_cold = Summe(sky_temp_below_zero_pct ≥ 90)`
-
----
-
-#### 7. Verhältnis zwischen Nächten mit MSAS > 21.3 und kalten Nächten
-
-Das Verhältnis der Nächte mit hoher Himmelsqualität (MSAS > 21.3) zu den kalten Nächten wird in Prozent berechnet:
-- **Wenn nights_cold > 0:**  
-  `ratio = (nights_over_21_3 ÷ nights_cold) × 100`
-- **Sonst:**  
-  `ratio = 0`
+4. **Anzahl der kalten Nächte**:  
+   Nächte, in denen mindestens 90% der Zeit die Himmelstemperatur unter 0°C lag:  
+   `nights_cold = Summe(sky_temp_below_zero_pct ≥ 90)`.
 
 ---
 
-#### 8. Durchschnittliche und jährliche Aggregation
+#### Zweiter Plot: Verhältnis zwischen Nächten mit hoher Himmelsqualität und kalten Nächten
 
-Für jedes Jahr werden die folgenden Werte berechnet:
-- **Nächte mit MSAS > 21.3:** `nights_over_21_3`
-- **Kalte Nächte (< 0°C):** `nights_cold`
-- **Verhältnis (%) zwischen den Kategorien:** `ratio`
+**Beschreibung**:  
+Dieser Plot zeigt den **prozentualen Anteil** der Nächte, bei denen `max_msas > 21.3`, im Vergleich zu den kalten Nächten.
 
----
-
-#### 9. Zeitspanne für die Daten
-
-Die minimale und maximale Zeit der Messungen wird berechnet, um den analysierten Zeitraum zu bestimmen:  
-`Zeitspanne = [min(time), max(time)]`
+- **Darstellung**: Pro Jahr wird ein kurzer Strich gezeichnet, der den Anteil (%) zeigt.
+- **Trendlinie**: Eine gestrichelte Linie zeigt ab mindestens 3 Jahren einen langfristigen Trend (lineare Regression).
 
 ---
 
-#### 10. Diagramme
+**Berechnung des Verhältnisses**
 
-##### 10.1 Balkendiagramm: Anzahl der Nächte
+Das Verhältnis (%) zwischen Nächten mit `max_msas > 21.3` und kalten Nächten wird berechnet als:
+- **Wenn kalte Nächte vorhanden sind (`nights_cold > 0`)**:  
+  `ratio = (nights_over_21_3 ÷ nights_cold) × 100`.
 
-Ein Balkendiagramm zeigt die jährliche Anzahl der Nächte in folgenden Kategorien:
-- **Nächte mit MSAS > 21.3**
-- **Kalte Nächte (< 0°C)**
-
-Die Achsen des Diagramms sind:  
-- **x-Achse:** Jahr  
-- **y-Achse:** Anzahl der Nächte  
+- **Wenn keine kalten Nächte vorhanden sind**:  
+  `ratio = 0`.
 
 ---
 
-##### 10.2 Verhältnisdiagramm: Nächte mit MSAS > 21.3 vs. kalte Nächte
+### Zusammenfassung
 
-Ein Liniendiagramm zeigt das Verhältnis (%) der Nächte mit MSAS > 21.3 zu den kalten Nächten für jedes Jahr.  
-Zusätzlich wird, wenn mindestens 3 Jahre verfügbar sind, eine **lineare Regression** berechnet, um langfristige Trends zu visualisieren.
+1. **Erster Plot**: Zeigt die jährliche Anzahl von Nächten in zwei Kategorien:  
+   - Nächte mit hoher Himmelsqualität (max. MSAS > 21.3).  
+   - Nächte, in denen der Himmel überwiegend kalt war (Temperatur < 0°C).
+
+2. **Zweiter Plot**: Visualisiert den Anteil der Nächte mit hoher Himmelsqualität im Vergleich zu den kalten Nächten.
+
+3. **Filterbedingungen**:  
+   - Nur astronomische Nächte werden berücksichtigt.  
+   - Himmelstemperatur muss unter 0°C liegen.  
+   - Die Daten sind pro Jahr aggregiert und nach Bedingungen gefiltert.
+
+**Diagrammziel**: Veranschaulichen, wie oft besonders dunkle Nächte auftreten und wie sie mit kalten Nächten in Beziehung stehen.
 
 ---
 
 ### Analyse pro Monat
 
-Dieses Skript verarbeitet Daten eines Photometers, um die nächtlichen Bedingungen eines bestimmten Monats zu analysieren. Es berechnet:
-- Die minimale und maximale Himmelshelligkeit (MSAS) pro Nacht.
-- Die Gesamtzeit pro Nacht, in der die Himmelshelligkeit einen bestimmten Schwellenwert überschreitet (z. B. MSAS > 21.3).
-- Den Verlauf der Mondphase über den Monat.
+#### Erster Plot: Minimale und maximale Helligkeit pro Nacht
+
+**Beschreibung**:  
+Dieser Plot zeigt die **dunkelsten** und **hellsten** MSAS-Werte jeder Nacht für den ausgewählten Monat.  
+- **Linien:** Stellen den minimalen (dunkelsten) und maximalen (hellsten) MSAS-Wert pro Nacht dar.
+- **Referenzlinie:** Eine Linie bei **MSAS = 21.3** markiert einen sehr dunklen Himmel.
 
 ---
 
-#### 1. Daten filtern
+**Filterbedingungen für die Nächte**
 
-Die Daten werden auf folgende Bedingungen gefiltert:
-- **Astronomische Nächte**: Zeiträume, in denen der Himmel vollständig dunkel ist (`sun_alt <= -18`).
-- **MSAS > 0**: Nur valide Helligkeitsmessungen werden berücksichtigt.
-- **Monat und Jahr**: Nur Daten aus dem ausgewählten Monat werden analysiert.
-
----
-
-#### 2. Jahr und Monat extrahieren
-
-Für jede Messung werden Jahr und Monat aus dem Zeitstempel extrahiert:
-`Jahr = Jahr(Zeit)`, `Monat = Monat(Zeit)`.
+- **Astronomische Nächte:** Es werden nur Zeiträume analysiert, in denen der Himmel vollständig dunkel ist (`sun_alt <= -18`).
+- **MSAS > 0:** Nur valide Helligkeitswerte werden berücksichtigt.
+- **Monat und Jahr:** Daten werden auf den ausgewählten Monat und das Jahr beschränkt.
 
 ---
 
-#### 3. Maximaler und minimaler MSAS pro Nacht
+**Berechnungen**
 
-Für jede Nacht wird berechnet:
-- **Maximale Helligkeit:** `max_msas = max(msas)`
-- **Minimale Helligkeit:** `min_msas = min(msas)`
-
-Diese Werte zeigen die Himmelsqualität jeder Nacht an. Ein hoher MSAS-Wert (> 21.3) bedeutet einen dunklen und klaren Himmel.
-
----
-
-#### 4. Gesamtzeit mit MSAS > 21.3 pro Nacht
-
-Die Gesamtzeit pro Nacht, in der der MSAS-Wert grösser als 21.3 ist, wird wie folgt berechnet:
-- **Zeitdifferenz:** Die Zeit zwischen aufeinanderfolgenden Messungen wird berechnet:  
-  `time_diff = Zeit(t+1) - Zeit(t)`
-- **Nur gültige Zeitintervalle:** Zeitdifferenzen grösser als 200 Sekunden werden ausgeschlossen.
-- **Summierte Zeit:** Die Gesamtzeit mit MSAS > 21.3 wird in Stunden umgerechnet:  
-  `total_time_hours = Summe(time_diff) ÷ 3600`
+1. **Maximale und minimale Helligkeit pro Nacht**:  
+   - **Maximale Helligkeit:**  
+     `max_msas = max(msas)`
+   - **Minimale Helligkeit:**  
+     `min_msas = min(msas)`
 
 ---
 
-#### 5. Bortle-Skala
+#### Zweiter Plot: Gesamtzeit mit MSAS > 21.3 pro Nacht
 
-Die Bortle-Klasse wird gemäss dem MSAS-Wert bestimmt:
-- **Klasse 1:** MSAS ≥ 21.90
-- **Klasse 2:** 21.50 ≤ MSAS < 21.90
-- **Klasse 3:** 21.30 ≤ MSAS < 21.50
-- **Klasse 4:** 20.80 ≤ MSAS < 21.30
-- **Klasse 4.5:** 20.10 ≤ MSAS < 20.80
-- **Klasse 5:** 19.10 ≤ MSAS < 20.10
-- **Klasse 6-7:** 18.00 ≤ MSAS < 19.10
-- **Klasse 8-9:** MSAS < 18.00
+**Beschreibung**:  
+Dieser Plot zeigt die Gesamtzeit (in Stunden) pro Nacht, in der der MSAS-Wert über 21.3 liegt, was einen sehr dunklen Himmel anzeigt.  
 
 ---
 
-#### 6. Mondphase berechnen
+**Filterbedingungen**
 
-Die Mondphase wird für jeden Tag des Monats analysiert:
-- Werte reichen von 0 (Neumond) bis 1 (Vollmond).
-- Der Verlauf der Mondphase wird über den Monat dargestellt.
-
----
-
-#### 7. Diagramme erstellen
-
-Das Skript erstellt drei Diagramme für den ausgewählten Monat:
-
-1. **Minimale und maximale Helligkeit pro Nacht**:
-   - Zeigt die **dunkelsten** und **hellsten** MSAS-Werte jeder Nacht.
-   - Referenzlinie bei **MSAS = 21.3**, um einen dunklen Himmel zu markieren.
-
-2. **Gesamtzeit mit MSAS > 21.3 pro Nacht**:
-   - Zeigt die Zeit (in Stunden), in der die Himmelshelligkeit sehr gut war.
-
-3. **Verlauf der Mondphase**:
-   - Zeigt, wie sich die Mondphase (Neumond bis Vollmond) im Laufe des Monats verändert hat.
+- **Astronomische Nächte:** Es werden nur Zeiträume berücksichtigt, in denen der Himmel vollständig dunkel ist.
+- **Zeitintervalle:** Nur Messungen mit Zeitdifferenzen ≤ 200 Sekunden zwischen aufeinanderfolgenden Datenpunkten werden berücksichtigt.
 
 ---
 
-#### Zusammenfassung der Berechnungen
+**Berechnungen**
 
-- **Höchste und niedrigste Helligkeit pro Nacht:**  
-  `max_msas = max(msas)`  
-  `min_msas = min(msas)`
+1. **Zeitdifferenz zwischen Messungen:**  
+   `time_diff = Zeit(t+1) - Zeit(t)`
 
-- **Gesamtzeit pro Nacht mit MSAS > 21.3:**  
-  `total_time_hours = Summe(time_diff) ÷ 3600`
+2. **Summierte Zeit:**  
+   `total_time_hours = Summe(time_diff) ÷ 3600`
 
-- **Mondphase pro Tag:**  
-  `moon_illumination = Werte von 0 bis 1`
+---
 
-Das Skript liefert somit eine vollständige Übersicht über die nächtlichen Bedingungen eines Monats.
+#### Dritter Plot: Verlauf der Mondphase
+
+**Beschreibung**:  
+Dieser Plot zeigt, wie sich die Mondphase (Neumond bis Vollmond) über den ausgewählten Monat verändert.
+
+- **Wertebereich:** Die Mondphase wird als Wert zwischen 0 (Neumond) und 1 (Vollmond) dargestellt.
+- **x-Achse:** Tage des Monats.  
+- **y-Achse:** Mondphase.
+
+---
+
+**Zusammenfassung der Berechnungen**
+
+1. **Maximale und minimale Helligkeit pro Nacht:**  
+   - `max_msas = max(msas)`  
+   - `min_msas = min(msas)`
+
+2. **Gesamtzeit mit MSAS > 21.3 pro Nacht:**  
+   - `total_time_hours = Summe(time_diff) ÷ 3600`
+
+3. **Mondphase pro Tag:**  
+   - `moon_illumination = Werte von 0 bis 1`
+
+---
+
+### Zusammenfassung
+
+Der Plot visualisiert:
+
+1. **Helligkeit**: Dunkelste und hellste Werte pro Nacht.  
+2. **Zeit mit hoher Himmelsqualität**: Wie viele Stunden pro Nacht die Himmelshelligkeit MSAS > 21.3 erreichte.  
+3. **Mondphase**: Die Veränderung der Mondphase im Monat.
+
+**Filterbedingungen**:
+
+- Es werden nur astronomische Nächte berücksichtigt.  
+- Messungen mit MSAS > 0 und gültigen Zeitdifferenzen werden analysiert.  
+- Daten sind auf den ausgewählten Monat und das Jahr beschränkt.
 
 ---
 
 ### Analyse Einzelnächte
 
-Dieses Skript verarbeitet die von einem Photometer (einem Instrument, das die Helligkeit des Himmels misst) erfassten Daten, um die nächtlichen Bedingungen auf der Grundlage der gemessenen Helligkeit (MSAS) und der Temperatur des Himmels zu analysieren.  
+**Beschreibung**:
+Dieses Skript verarbeitet die von einem Photometer erfassten Daten, um die nächtlichen Bedingungen auf der Grundlage der gemessenen Helligkeit (MSAS) und der Temperatur des Himmels zu analysieren.  
 Schliesslich erzeugt es Diagramme, die die in den Nächten eines bestimmten Monats erfassten Daten darstellen.
 
-#### 1. Daten filtern
+**Filterbedingungen für die Nächte**
 
-Eine Zeile ist gültig, wenn:
-- **MSAS > 0** (Helligkeitswert ist positiv)
-- **Zeit ≠ leer** (die Zeitangabe fehlt nicht)
-- **MSAS ≠ leer** (der Helligkeitswert fehlt nicht)
+1. **Gültige Daten:**  
+   Eine Zeile wird als gültig betrachtet, wenn:
+   - `MSAS > 0` (Helligkeitswert ist positiv).
+   - `Zeit ≠ leer` (die Zeitangabe fehlt nicht).
+   - `MSAS ≠ leer` (der Helligkeitswert fehlt nicht).
 
-#### 2. Nachtzeitraum
+2. **Nachtzeitraum:**  
+   - **Nachtbeginn:** Die Nacht beginnt am aktuellen Tag um 16:00 Uhr.  
+     `Nachtbeginn = Tag + 16:00`
+   - **Nachtende:** Die Nacht endet am folgenden Tag um 09:00 Uhr.  
+     `Nachtende = nächster Tag + 09:00`
 
-- **Nachtbeginn:** Zeit = Tag + 16:00
-- **Nachtende:** Zeit = nächster Tag + 09:00
+3. **Astronomische Nacht:**  
+   Es werden nur Zeiträume berücksichtigt, in denen die Sonnenhöhe unter -18° liegt:  
+   `Sonnenhöhe < -18°`
 
-#### 3. Astronomische Nacht
+---
 
-Die astronomische Nacht umfasst alle Momente, in denen:
-**Sonnenhöhe < -18°**
+**Berechnungen**
 
-#### 4. Zeiträume mit Temperaturen unter 0°C
+1. **Maximale und minimale Helligkeit pro Nacht:**  
+   - **Maximale Helligkeit:**  
+     `max_msas = max(msas)`
+   - **Minimale Helligkeit:**  
+     `min_msas = min(msas)`
 
-- **Bedingung:** Temperatur < 0
-- **Dauer des Zeitraums:**  
-  Dauer = Zeit\_ende - Zeit\_beginn
-- **Bedingung für Gültigkeit:**  
-  Dauer ≥ 30 Minuten
+2. **Zeiträume mit Temperaturen unter 0°C:**  
+   - **Bedingung:**  
+     `Temperatur < 0°C`
+   - **Dauer eines Zeitraums:**  
+     `Dauer = Zeit_ende - Zeit_beginn`
+   - **Bedingung für Gültigkeit:**  
+     `Dauer ≥ 30 Minuten`
 
-#### 5. Bortle-Skala
+3. **Durchschnittliche Helligkeit während der Nacht:**  
+   Der durchschnittliche MSAS-Wert wird wie folgt berechnet:  
+   `Durchschnittlicher MSAS = (Summe aller gültigen MSAS-Werte) ÷ (Anzahl gültiger Messungen)`
 
-Die Bortle-Klasse wird gemäss dem MSAS-Wert bestimmt:
-- **Klasse 1:** MSAS ≥ 21.90
-- **Klasse 2:** 21.50 ≤ MSAS < 21.90
-- **Klasse 3:** 21.30 ≤ MSAS < 21.50
-- **Klasse 4:** 20.80 ≤ MSAS < 21.30
-- **Klasse 4.5:** 20.10 ≤ MSAS < 20.80
-- **Klasse 5:** 19.10 ≤ MSAS < 20.10
-- **Klasse 6-7:** 18.00 ≤ MSAS < 19.10
-- **Klasse 8-9:** MSAS < 18.00
+4. **Bortle-Skala:**  
+   Die Bortle-Klasse wird gemäß dem MSAS-Wert bestimmt:
+   - **Klasse 1:** `MSAS ≥ 21.90`
+   - **Klasse 2:** `21.50 ≤ MSAS < 21.90`
+   - **Klasse 3:** `21.30 ≤ MSAS < 21.50`
+   - **Klasse 4:** `20.80 ≤ MSAS < 21.30`
+   - **Klasse 4.5:** `20.10 ≤ MSAS < 20.80`
+   - **Klasse 5:** `19.10 ≤ MSAS < 20.10`
+   - **Klasse 6-7:** `18.00 ≤ MSAS < 19.10`
+   - **Klasse 8-9:** `MSAS < 18.00`
 
-#### 6. Durchschnittliche Helligkeit während der Nacht
+5. **Dauer eines Intervalls:**  
+   `Dauer = Zeit_ende - Zeit_beginn`
 
-Durchschnittlicher MSAS = (Summe aller gültigen MSAS-Werte) ÷ (Anzahl gültiger Messungen)
+---
 
-#### 7. Referenzlinie
+### Zusammenfassung
 
-Die Referenzlinie für den Zielwert im Diagramm:  
-**MSAS = 21.3**
+Der Plot visualisiert:
 
-#### 8. Dauer eines Intervalls
+1. **Helligkeit**: Dunkelste und hellste Werte pro Nacht.  
+2. **Temperaturintervalle**: Zeiträume, in denen die Himmelstemperatur unter 0°C lag.  
+3. **Bortle-Skala**: Einstufung der Nächte nach Himmelsqualität.  
+4. **Durchschnittswerte:** Durchschnittliche Helligkeit jeder Nacht.
 
-Die Dauer eines Intervalls wird berechnet als:  
-**Dauer = Zeit\_ende - Zeit\_beginn**
+**Filterbedingungen**:  
+- Nur astronomische Nächte werden berücksichtigt.  
+- Es werden nur gültige Daten analysiert (MSAS > 0, gültige Zeitangaben).  
+- Temperaturintervalle mit einer Dauer von mindestens 30 Minuten werden einbezogen.
 
 ---
 
