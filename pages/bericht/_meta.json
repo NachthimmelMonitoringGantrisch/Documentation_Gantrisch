@@ -3,6 +3,10 @@
   "literaturrecherche": { "title": "Literaturrecherche", "order": 2 },
   "methodik": { "title": "Methodik ", "order": 3 },
   "begriffsdefinition": { "title": "Begriffsdefinition ", "order": 4 },
+  "backend-und-hintergrundprozesse": {
+    "title": "Backend und Hintergrundprozesse ",
+    "order": 5
+  },
   "projekt": { "title": "Projekt", "order": 9 },
   "reflektion": { "title": "Reflektion", "order": 10 },
   "fazit": { "title": "Fazit", "order": 11 }

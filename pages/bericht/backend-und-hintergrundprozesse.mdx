@@ -1,0 +1,55 @@
+# Backend und Hintergrundprozesse
+
+Um die Rohdaten der Photometer direkt und aktuell aus der Nextcloud zu beziehen und die vorprozessierten Daten einheitlich in eine Datenbank zu importieren, werden mehrere Hintergrundprozesse in die Plattform implementiert. Für den Datenbezug wird die bestehende Bibliothek „TESS-IDA-TOOLS“ von STARS4ALL genutzt. Die Hintergrundprozesse werden entweder durch einen manuellen Aufruf oder automatisch beim Start der Plattform aktiviert. Alle Hintergrundprozesse basieren auf Python-Skripts, die kontextabhängig im richtigen Zeitpunkt ausgeführt werden. Die Abhängigkeiten zwischen den Python Skripts und den externen Tools werden in der **Abbildung 3** visualisiert.
+
+![Abbildung1](/documentary/20241211_Server_Achitecture_Gantrisch_3.png)
+**Abbildung 3**: Visualisierung der Hintergrundprozesse und externen Schnittstellen. Es werden schematisch die Abhängigkeiten dargestellt und es ist sichtbar welche Funktion die einzelnen Python-Skripts haben
+
+Die beiden externen Tools „TESS API“ und „TESS-IDA-TOOLS“ werden als Schnittstelle für den Datenbezug verwendet. Die Datenstruktur der Meta- sowie Messdaten wird ebenfalls in der Visualisierung dargestellt. Alle Python Skripts werden aufgelistet und deren Funktionen werden beschrieben. In der **Abbildung 3** ist zu sehen welche Daten die Skripts beziehen und bei welcher Aktion in der Plattform die Skripts aufgerufen werden. Die einzelnen Komponenten des Backend werden in den folgenden Unterabschnitten detailliert beschrieben.
+
+## Initialisierung Abhängigkeiten
+
+Als Grundlage für die Ausführung von Skripts einer Programmiersprache dienen sogenannte Environments, also Programmierumgebungen. Damit ein Python Skript von einer R-Shiny Anwendung ausgeführt werden kann, wird ein virtuelles Environment benötigt. In einem Hintergrundprozess, welcher beim Start der lokalen Plattform ausgeführt wird, wird das virtuelle Environment für die Ausführung von Python mit R überprüft. Falls das virtuelle Environment nicht vorhanden ist, wird es erstellt und alle nötigen Bibliotheken werden installiert. Die Bibliotheken werden mit einer spezifischen Version eingefroren, was eine wichtige Grundlage für die Reproduzierbarkeit der Resultate bietet.
+
+## Metadaten TESS-Netzwerk
+
+Damit für die Funktion „Daten herunterladen“ eine aktuelle Auswahl der aktiven Photometer zur Verfügung steht, werden die Metadaten des gesamten TESS-Netzwerks über die offizielle Application Programming Interface (API) Schnittstelle „TESS-API“ bezogen. Die offizielle API bietet mit „List all Photometers“ die Funktion alle Metadaten pro Photometer zu beziehen (STARS4ALL 2024c). Mit dem Bezug von aktuellen Metadaten wird sichergestellt, dass in Zukunft auch Daten von neu hinzugefügten Photometern bezogen werden können.
+
+Bei der entwickelten Plattform wird automatisch das Python Skript „C_Metadata_2DB.py“ beim Start der R-Shiny Applikation ausgeführt. Dieses Skript bezieht die Metadaten pro Photometer, vereinheitlicht das Attribut der Zeitzone "local_timezone" und speichert die Metadaten in einer separaten SQLite Datenbank ab. Die Attribute der Zeitzone werden in der Datenbank von STARS4ALL nicht einheitlich vergeben. Es treten beispielsweise Attributwerte wie UTC+1 oder Europe/Zurich auf. Diese Inkonsistenz in den Daten wird durch ein Mapping des Attributs "local_timezone" mit Hilfe der Zeitzonentabelle aus Wikipedia behoben. Die einheitliche Darstellung der Zeitzone als Attribute „local_timezone_name“ und „local_timezone“ dient einer besseren Interpretation der Metadaten. Auf die Beachtung der Sommerzeit in den jeweiligen Zeitzonen wird aufgrund von entstehender Inkonsistenz in den Daten verzichtet.
+
+Falls eine ungültige Zeitzone in den Metadaten gespeichert wird oder die Zeitzonentabelle auf Wikipedia ändert, werden Fehlermeldungen ausgelöst. Diese Fehlermeldungen werden im Statusbereich der Plattform den Nutzenden kommuniziert. Weitere Fehlermeldungen werden im Falle des Auftretens von HTML-Fehlercodes ausgelöst und kommuniziert. Ausserdem werden die Verbindung und Existenz der Datenbank vor jedem Start der Plattform geprüft. Falls keine Datenbank in der definierten Ordnerstruktur vorhanden ist, wird eine Datenbank für die Metadaten erstellt.
+
+Bei Veränderungen der „TESS-API“ oder der Wikipedia Tabelle ist die Funktionalität der Metadatentabelle in der Registerkarte „Daten herunterladen“ nicht mehr gewährleistet. Dieses Problem könnte mit der Erstellung einer Backupdatenbank behoben werden. Somit könnte die Plattform weiterhin mit einer gesicherten Datenbank der Metadaten betrieben werden. Daraus würde sich aber schliessen, dass neue Photometer nicht angezeigt werden.
+
+## Messdaten TESS-Netzwerk
+
+Die Messdaten des TESS-Netzwerkes werden auf einer Nextcloud publiziert. Jeweils um 06:00 Uhr werden alle Messwerte der Photometer in einer .dat Datei hochgeladen. Die Daten sind pro Monat in einer Datei gespeichert.
+
+Mit Hilfe des Git-Repository „TESS-IDA-TOOLS“ wird eine Datenabfrage gestartet, welche die Messdaten des angegebenen Sensors für den bestimmten Zeitraum herunterladet. Automatisch in einem zweiten Schritt werden die Messdaten um das Attribut Sonnenwinkel, Mond Winkel und Mond Helligkeit ergänzt. In einem letzten Schritt werden die Messdaten um die Night ID und weiteren berechnete Attribute ergänzt. Alle Attribute der Messdaten und daraus berechneten Werte sind in der **Abbildung 3** ersichtlich.
+
+Das Filtern von Messwerten in der R-Shiny-Anwendung über das Datums-Zeit-Attribut ist rechenintensiv. Diese Berechnungszeit wird reduziert, indem der Messwert "Sun_Alt" mit einem Wahr- oder Falsch-Wert für jede Filteroption versehen wird. Auf diese Weise können Messwerte, die den Filterkriterien entsprechen oder nicht, bereits im Voraus aussortiert werden. Dadurch verkürzt sich die Rechenzeit während der Nutzung der Anwendung, während sich die Dauer des Datenbezugs aufgrund der Vorprozessierung erhöht.
+
+Die TESS-IDA-TOOLS, welche für die Datenabfrage und die Berechnung der Messwerte verwendet werden, benötigen eine Environment-Datei, um die Verbindung zur Nextcloud herzustellen. Darüber hinaus wird ein virtuelles Environment benötigt, um Befehle wie „tess-ida-pipe“ auszuführen. Diese Anforderungen werden in die Python-Skripte „D_setup_download.py“, „E_data_2_DB.py“ und „F_download_TESS_data.py“ integriert. Letztlich werden die Funktionen dieser Skripte von der R-Shiny-Plattform genutzt, um die Daten effizient zu verarbeiten und bereitzustellen.
+
+## Messdaten Datenbank
+
+Alle Messdaten werden in der SQLite Datenbank „TessNetwork_data.db“ gespeichert. Der Vorteil einer SQLite Datenbank ist, dass diese nur aus einem File besteht, einfach in der Installation ist und in R Studio eine Einbindung möglich ist. Der simple Aufbau von SQLite ist vor allem relevant für die Realisierung der Plattform in Docker Containern.
+
+Vor dem Import der Messdaten in die Datenbank wird eine Vorprozessierung der Daten vorgenommen. Die Berechnung der Attribute „time (local)“, „night_id“, „astronomical_night“ und „cloud_coverage“ werden durch Funktionen im Skript „E_data_2_DB.py“ ausgeführt. Pro Photometer wird eine separate Tabelle erstellt, damit wird eine klare Strukturierung eingeführt. Für die Visualisierungen, welche in die Plattform integriert werden, werden diese weiteren Attribute gemäss [Begriffsdefinition](./begriffsdefinition) benötigt.
+
+## Intelligenter Datenbezug
+
+Vor jedem Messdatenimport in die Datenbank „TessNetwork_data.db“, wird ein Eintrag in der Kontroll-Tabelle „data_import_control“ erstellt. Der Eintrag besteht aus dem Namen des Photometers, dem Monat und Jahr der Daten, sowie dem Import Zeitpunkt. So wird vor jedem Datenbezug überprüft, ob bereits Messdaten im ausgewählten Zeitraum für den angefragten Sensor vorhanden sind. Falls ein Eintrag des gewählten Monats existiert, wird kein Datenbezug ausgelöst, aber nur sofern die Messdaten des Monats komplett sind. Dies wird über das Datum des Imports berechnet. Wenn Messdaten des aktuellen Monats heruntergeladen werden, umfasst die ecsv-Datei nicht alle Daten des Monats. Bei einem weiteren Datenbezug des selben Photometers müssen die Daten des unvollständigen Monats erneut heruntergeladen werden. In der **Tabelle 2** ist ein vereinfachtes Beispiel dieser „data_import_control“ Tabelle dargestellt. In der ersten Zeile ist der Monat Oktober zum Zeitpunkt des Datenbezugs schon vorbei. Deshalb erhält dieser Eintrag den Attributwert vollständig. Bei der umgesetzten Tabelle wird das Attribut „complete“ mit einem Boolean Wert abegfüllt.
+
+| **Import Datei .ecsv** | **Datum Import** | **Status**    | **Beschreibung**                                       |
+| :--------------------- | :--------------- | :------------ | :----------------------------------------------------- |
+| stars289_2024-10       | 27.11.2024       | Vollständig   | Name of the resource                                   |
+| stars289_2024-11       | 27.11.2024       | Unvollständig | Messdaten von 27.11.2024 bis und mit 30.11.2024 fehlen |
+
+**Tabelle 2**: Vereinfachtes Beispiel der Kontroll-Tabelle des Daten Imports
+
+Mit Hilfe der Messdaten wäre es auch möglich anzugeben, ob diese vollständig sind oder nicht. Die Abfrage über diese Kontroll-Tabelle „data_control_table“ ist jedoch schneller, als wenn jede Zeile der Messdaten überprüft werden muss.
+
+## Fehlerbehandlung Hintergrundprozesse
+
+Im Prozess der Entwicklung wird versucht möglichst viele Fehler aus den externen Tools und Fehlinteraktionen der Nutzenden abzugreifen. Die bereits identifizierten Fehler werden in den Skripts der Hintergrundprozesse erkannt und als verständliche Textausgabe im Statusbereich wiedergegeben. Allerdings hängen alle Hintergrundprozesse an externen Schnittstellen, was ein erhöhtes Risiko für Fehler mit sich bringt. Im Rahmen dieses Projekts ist es somit nicht möglich alle möglichen externen Fehler zu identifizieren und im Statusbereich darzustellen. Veränderungen von externen Komponenten können zu Funktionsstörungen der Plattform führen.
