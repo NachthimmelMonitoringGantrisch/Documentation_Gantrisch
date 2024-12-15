@@ -66,7 +66,7 @@ Im **Photometer Analyse**-Tab können Sie aus verschiedenen Analysen wählen:
 
 #### Analyse Einzelnächte
 
-##### **1. Definition der Nachtzeit**
+##### Definition der Nachtzeit
 
 Die Nacht ist definiert als der Zeitraum, der um 16:00 Uhr UTC am angegebenen Tag beginnt und um 09:00 Uhr UTC am folgenden Tag endet. 
 Dieser Ansatz ermöglicht es, sowohl die Abend- als auch die frühen Morgenstunden einzubeziehen. 
@@ -85,7 +85,7 @@ if (day == days_in_month(ymd(paste(year, month, "01")))) {
 
 ---
 
-##### **2. Filtern von Daten**
+##### Filtern von Daten
 
 Die Daten werden so gefiltert, dass nur die Daten für den Nachtzeitraum und gültige **MSAS**-Werte (positiv und ungleich Null) berücksichtigt werden. 
 Darüber hinaus wird der Zeitraum der **astronomischen Nacht** ermittelt, der als die Zeit definiert ist, in der die Höhe der Sonne (`sun_alt`) weniger als -18° beträgt.
@@ -107,7 +107,7 @@ night_intervals <- df_night %>%
 
 ---
 
-##### **3. Temperaturbereiche unter 0°C**
+##### Temperaturbereiche unter 0°C
 
 Intervalle, in denen die Himmelstemperatur (**sky_temperature**) unter 0°C liegt, werden identifiziert und zu kontinuierlichen Segmenten gruppiert. 
 Nur Intervalle mit einer Dauer von mindestens **30 Minuten** werden als gültig angesehen.
@@ -133,7 +133,7 @@ df_grouped <- df_night %>%
 
 ---
 
-##### **4. Bortle-Skala**
+##### Bortle-Skala
 
 Die Qualität des Nachthimmels wird anhand der **Bortle-Skala** klassifiziert, die **MSAS**-Werte (mag/arcsec²) mit Himmelsqualitätsstufen verknüpft. 
 Jede Ebene ist durch eine bestimmte Farbe gekennzeichnet, was die Visualisierung und Interpretation erleichtert.
@@ -151,7 +151,7 @@ bortle_scale <- data.frame(
 
 ---
 
-##### **5. Erstellung der Grafik**
+##### Erstellung der Grafik
 
 Das Diagramm kombiniert MSAS-Daten mit Informationen der Bortle-Skala und Temperaturbereichen unter dem Gefrierpunkt. 
 Darüber hinaus werden astronomische Nachtzeiten angezeigt, um die wichtigsten Momente der Himmelsqualität hervorzuheben.
