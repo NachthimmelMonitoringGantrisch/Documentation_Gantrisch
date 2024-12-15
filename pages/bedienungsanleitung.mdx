@@ -128,7 +128,7 @@ df_grouped <- df_night %>%
     duration = as.numeric(difftime(max(time[temp_below_zero == 1], na.rm = TRUE), min(time[temp_below_zero == 1], na.rm = TRUE), units = "mins")),
     .groups = "drop"
   ) %>%
-  filter(duration >= 30)  # Conserva solo gli intervalli di durata >= 30 minuti
+  filter(duration >= 30)  # Nur Intervalle mit einer Dauer von >= 30 Minuten beibehalten
 ```
 
 ---
