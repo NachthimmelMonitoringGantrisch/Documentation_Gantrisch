@@ -1,0 +1,54 @@
+# Begriffsdefinition
+
+Für die Erarbeitung und das Verständnis der Daten müssen mehrere Begriffe klar definiert werden, weil diese unterschiedlich interpretiert werden können. Als einheitliche Grundlage dienen die folgenden Begriffsdefinitionen. In **Tabelle 1** sind die Begriffe aufgelistet mit der jeweiligen Bedingung, die diese erfüllen sollten. In den nachfolgenden Kapitel sind diese Parameter noch detaillierter erklärt.
+
+| **Begriff**                                     | **Bedingung **                                                                              |
+| :---------------------------------------------- | :------------------------------------------------------------------------------------------ |
+| [`Nacht`](#nacht)                               | Beginn, wenn die Sonne 18° unterhalb des Horizontes steht                                   |
+| [`Night ID` ](#night-id)                        | Eindeutiger Identifikator der Messwerte der Nacht zuweist                                   |
+| [`MSAS` ](#magnitude-pro-quadrat-bogensekunde)  | Magnitudenwert über 21.3 mag/arcsec2 bei klarer Nacht erfüllt Kriterium einer dunklen Nacht |
+| [`tSky` ](#sky-temperature)                     | Himmelstemperatur esswerte unter 0° weisen auf klaren Himmel hin                            |
+| [`Bewölkung` ](#bewölkung)                      | Klassierung der Messwerte in [klar, teilweise bewölkt, bewölkt]                             |
+| [`Beobachtungszeitraum`](#beobachtungszeitraum) | Relevante Messwerte innehrlab von 16 Uhr bis 9 Uhr                                          |
+| [`Mond Phase` ](#mond-phase)                    | Zeigt die Mondphase kontinuierlich zwischen 0 = Leermond und 1 = Vollmond an                |
+| [`Lokalzeit` ](#lokalzeit)                      | Ortszeit des Sensors in Winterzeit                                                          |
+
+**Tabelle 1**: Übersicht und kurze Erklärung der wichtigsten Begriffe, die im Projekt verwendet werden.
+
+## Nacht
+
+Zwischen Tag und Nacht liegt die Dämmerung. Diese setzt ein, sobald die Sonne unterhalb des Horizontes liegt. Da die die Sonnenstrahlen in der Atmosphäre gebrochen werden, ist zu dieser Zeit noch nicht dunkel. Eingeteilt ist die Dämmerung in drei Phasen. Die letzte und dunkelste ist die Astronomische Dämmerung, welche bei einem Sonnenstand von minus 12° unter dem Horizont beginnt und bei minus 18° endet. Nach dem Ende der Astronomische Dämmerung stört kein indirektes Licht das Beobachten von Sternen. (SRF 2024)
+
+## Night-ID
+
+Da sich bei einer Nacht das Datum um Mitternacht ändert, ist es erschwert Messwerte einer Nacht zuzuordnen. Um dieses Problem zu lösen, wird die Night ID eingeführt. Dies erlaubt eine eindeutige Zuweisung der Messwerte pro Nacht. Die Night ID besteht jeweils aus dem Start Datum der Nacht und einer „N“. Als Beispiel: „N20241028“. Somit werden die Messdaten einer Nacht jeweils zum Datum der Night ID zugewiesen und dargestellt.
+
+## Magnitude pro Quadrat Bogensekunde
+
+Die Flächenhelligkeit in der Einheit Magnitude pro Quadrat Bogensekunde, kurz MSAS beschreibt die Helligkeit des Nachthimmels. Je höher der MSAS-Wert, desto dunkler der Himmel. Vom Naturpark Gantrisch wird ein MSAS-Wert über 21.3 angestrebt. Die Messwerte, die bei einer klaren Nacht diesen Wert überschreiten, erfüllen das Kriterium einer dunklen Nacht.
+
+## Sky-Temperature
+
+Die Sky-Temperature, kurz tSky, beschreibt die Temperatur des Himmels mit Hilfe der Infrarot Messung und der Luftfeuchtigkeit. Ist diese unter 0°, fanden die Messungen mit grosser Wahrscheinlichkeit unter klarem Himmel statt. Klarer Himmel bedeutet, dass sich keine Wolken oder Nebel in der Umgebung befinden, welche künstliche Lichtquellen verstärken könnten.
+
+## Bewölkung
+
+Anhand der Sky-Temperature (tSky) und der Umgebungs-Temperatur (tamb) ist es möglich, die Wolkenbedeckung zu berechnen. Die Formel dafür lautet:
+
+Wolkenbedeckung [%] = 100 - 3\* („tamb“ - „tSky“)
+
+Formel aus: (STARS4ALL 2024b)
+
+Das Ergebnis kann anhand des Resultats in Klassen eingeteilt werden. Zwischen 0% und 40% wird der Himmel als klar bezeichnet. Bei einem Resultat grösser als 40% bis zu 65% ist der Himmel teilweise bewölkt, bei mehr als 65% gilt er als bewölkt. (STARS4ALL 2024b)
+
+## Beobachtungszeitraum
+
+Um Tagesmessreihen einheitlich über das ganze Jahr ansprechend darzustellen ist der Beobachtungszeitraum festgelegt. Dieser grenzt ab, bis zu welcher Uhrzeit die Messwerte relevant sind. Zwischen morgens 9 Uhr and abends 16 Uhr haben die Messwerte für das Projekt keine Bedeutung. Der Zeitraum ist so festgelegt, dass die längste Nacht enthalten ist, auf- respektive abgerundet auf die nächste volle Stunde.
+
+## Mond Phase
+
+Die Mondphase wird mit Werten zwischen 0 und 1 beschrieben. Dabei ist 0 Leermond und 1 Vollmond. Anhand der Position des Sensors und der Zeit wird dieser berechnet.(STARS4ALL 2024b)
+
+## Lokalzeit
+
+Der Zeitstempel der Messdaten ist in der Universal Time Coordinated, kurz UTC. In den Grafiken wird für die Zeitachse die Lokalzeit angeben für eine einfachere Interpretation. Um kontinuierliche Grafiken während dem ganz Jahr zu haben, wechselt die Lokalzeit nie auf die Sommerzeit. Wenn die Messzeiten an die Sommerzeit angepasst werden, ergibt sich folgendes Problem. Während einer Stunde gibt es keine Messdaten im Sommer, da die Uhr nach vorne gedreht wird. Im Winter, wenn die Uhr zurückgedreht wird, gibt es in einer Stunde doppelte Messdaten während der Zeitumstellung. Dies hätte zur Folge, dass Tagesgrafiken falsche Aussagen genieren.
