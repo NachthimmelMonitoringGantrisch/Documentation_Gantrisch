@@ -1,3 +1,39 @@
-# Fazit
+# Methodik
 
-Schluss 1/2 - 1 A4 Seite aus Word-File
+Damit die gesetzten Ziele aus der [Einleitung](./einleitung) umgesetzt werden können, muss als Erstes ein [Konzept](../konzept) erstellt werden. Das detaillierte Konzept ist im Anhang 1 beigefügt. Es wird ein technischer Lösungsweg entworfen, welcher in einem Architekturdiagramm visualisiert wird. Der technische Lösungsweg erfordert mehrere Entscheidungsprozesse, welche mit Inspiration der Methode „Architecture Decision Records“ dokumentiert werden. Diese Methode wird vor allem in der Softwareentwicklung angewendet und passt aus diesem Grund zu diesem Projekt (Galster et al. 2024).
+
+Im Rahmen der Konzepterarbeitung müssen die Entscheidungen anhand von Anforderungen der Stakeholder und den technischen Möglichkeiten getroffen werden.
+Es gibt zahlreiche Ansätze, um das definierte Ziel zu erreichen, von der Auswahl der geeigneten Architektur über die Wahl der passenden Schnittstellen bis hin zur Entscheidung über die Visualisierungsplattform.
+Jede dieser Entscheidungen beeinflusst nicht nur die Funktionalität, sondern auch die Flexibilität, Skalierbarkeit und Reproduzierbarkeit des finalen Produkts.
+In den folgenden Abschnitten [Auswahl der Datenschnittstelle für Photometer Daten](#auswahl-der-datenschnittstelle-fur-photometer-daten) und [Auswahl des Tools für die Programmierung der Plattform](#auswahl-des-tools-für-die-programmierung-der-plattform) werden zwei Schlüsselentscheidungen erläutert.
+
+## Auswahl der Datenschnittstelle für Photometer Daten
+
+Es wird eine robuste und verlässliche Methode für den Zugriff auf die Photometer-Daten angestrebt. Zur Visualisierung der Daten werden verschiedene Grafiken erstellt, die eine umfassende Datenbasis erfordern. Dies stellt gleichzeitig hohe Anforderungen an die Leistungsfähigkeit und Stabilität der Datenschnittstelle. Zur Auswahl stehen die folgenden Schnittstellen oder Werkzeuge: Den Bezug über Terminal Commands mit TESS-IDA-Tools mit Datengrundlage in der Nextcloud, über eine bestehende „TESS-API“ Schnittstelle oder über die Schnittstelle „Message Queuing Telemetry Transport“ (MQTT). Die Nextcloud ist eine webbasierte Datenbalge der Messdaten. Diese Schnittstellen werden von Institutionen im Umfeld der Organisation STARS4ALL bereitgestellt. Diese drei Schnittstellen wurden anhand von Kriterien wie Leistung (Performance), Anzahl möglicher Abfragen, Anzahl nötiger Abfragen, Regelmässigkeit des Datenbezugs, Aufwand für die Integration, Verlässlichkeit und Skalierbarkeit beurteilt. Vor allem aufgrund des Kriteriums der Anzahl benötigten und erlaubten Datenabfragen ist die Entscheidung auf die Schnittstelle „TESS-IDA-TOOLS“ gefallen. Es ist eine unbegrenzte Datenabfrage möglich, welche gezielt nach Benutzereingaben gesteuert werden kann. Ausserdem werden Berechnungen zu Sonnen- und Mondstand in Bezug auf den Photometer Standort bereits während dem Datenbezug durchgeführt. Die detaillierte Entscheidung und Begründung sind im [Konzept](../konzept) nachzulesen.
+
+## Auswahl des Tools für die Programmierung der Plattform
+
+Für die optimale Darstellung der Daten und eine benutzerfreundliche Plattform wird anhand spezifischer Kriterien eine geeignete Programmierumgebung ausgewählt. Die Kriterien umfassen Vorwissen, Aufwand, Individualisierbarkeit, Flexibilität, Interaktivität, Ökosystem, Skalierbarkeit und Reproduzierbarkeit. Für die Umsetzung stehen drei Lösungsansätze zur Verfügung.
+
+**Grafana Dashboard** bietet eine einfache Implementierung, insbesondere für IoT-Schnittstellen wie MQTT, und eignet sich hervorragend für Echtzeitdaten. Allerdings ist die Individualisierbarkeit begrenzt, und die Flexibilität erfüllt die Anforderungen des Projekts nicht. Da die Plattform lokal und nicht mit Echtzeit-Daten benötigt wird, erscheint diese Option weniger geeignet. (Grafana Labs 2024)
+
+**R + Shiny** weist eine hohe Individualisierbarkeit und Flexibilität auf. Die offene Struktur des R-Ökosystems ermöglicht die Integration zahlreicher Pakete, um massgeschneiderte Analysen und Visualisierungen zu erstellen. Für interaktive Dashboards ist der initiale Aufwand höher, jedoch ermöglicht die Struktur der Plattform eine klare und reproduzierbare Lösung. (Posit Software 2024)
+
+**Python + JS + React** bietet ein Framework, das keine Grenzen bei der Flexibilität und Interaktivität kennt. Die hohe Individualisierbarkeit geht jedoch mit einem deutlich höheren Implementierungsaufwand einher. Ausserdem wird durch die Verwendung vieler Komponenten die Codestruktur komplexer und erschwert somit die Zusammenarbeit.
+
+Auf Grundlage der Analyse wird R + Shiny als geeignete Programmierumgebung ausgewählt. Die Anforderungen an eine Docker-kompatible, lokal ausführbare Lösung sowie die Reproduzierbarkeit erweisen sich als ausschlaggebend. Da die Photometer Daten nur einen geringen geographischen Bezug aufweisen und der Schwerpunkt stärker auf Data Science liegt, erweist sich R + Shiny als geeignet. Auch diese Entscheidung ist als „Architecture Decision Record“ im Anhang [Konzept](../konzept) detaillierter beschrieben.
+
+## Docker Container
+
+Docker ist eine Plattform, die es Entwicklern ermöglicht, Anwendungen in sogenannten Containern zu verpacken und auszuführen. Ein Container ist eine standardisierte Einheit, die den Anwendungscode zusammen mit allen notwendigen Abhängigkeiten bündelt, sodass die Anwendung in verschiedenen Umgebungen konsistent und zuverlässig läuft. Ein Hauptvorteil von Docker-Containern ist ihre Portabilität. Sie können auf verschiedenen Plattformen wie lokalen Laptops, physischen oder virtuellen Maschinen im Rechenzentrum oder in der Cloud ausgeführt werden. Dies ermöglicht eine konsistente Ausführung der Anwendung, unabhängig von der zugrunde liegenden Infrastruktur. (Docker Inc. 2024)
+
+Mit der Verwendung von Docker Containern ist es möglich die einzelnen Programmbestandteile lokal auf einem Computer oder Server laufen zu lassen, ohne eine Programmierumgebung installieren zu müssen. Eine solche Umsetzung der Plattform erfüllt die Bedingung der einfachen Installation auf externen Computern. (Annika 2023)
+
+Bei einem Test mit minimalen Bestandteilen stellt sich heraus, dass die Komponenten R und Python jeweils in einem separaten Container laufen müssen. Mittels einer Batch Datei ist es möglich diese Container zu starten und somit auch die lokale Anwendung in einem Browser zu öffnen. Aufgrund des erfolgreichen Tests wird festgelegt, die Plattform mittels Docker Containern auf einem externen Computer lokal laufen zu lassen.
+
+## Architekturdiagramm
+
+Mittels der klar dokumentierten Entscheidungen in den Abschnitten [Auswahl der Datenschnittstelle für Photometer Daten](#auswahl-der-datenschnittstelle-fur-photometer-daten) und [Auswahl des Tools für die Programmierung der Plattform](#auswahl-des-tools-für-die-programmierung-der-plattform) kann eine konzeptionelle Visualisierung der geplanten Plattform erstellt werden. Diese Visualisierung beschreibt die Architektur der Plattform und zeigt Zusammenhänge auf. In der **Abbildung 1** ist das Architekturdiagramm inklusive der Einbindung von Docker Containern sichtbar.
+
+![Abbildung1](/documentary/20241123_Server_Achitecture_Gantrisch_2.png)
+**Abbildung 1**: Tabelle zur Einordnung der Magnituden Werte in der Bortle-Skala (Martínez-Ledesma et al. 2019)
