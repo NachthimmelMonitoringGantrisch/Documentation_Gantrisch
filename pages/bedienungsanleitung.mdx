@@ -108,80 +108,48 @@ Der Plot visualisiert:
 - Himmelstemperatur < 0°C.
 - Mondbeleuchtung < 30%.
 
+---
+
 ### Analyse pro Jahr
 
-#### Erster Plot: Jährliche Anzahl der Nächte nach Bedingung
-
 **Beschreibung**:  
-Dieser Plot zeigt die jährliche Anzahl von Nächten, die **zwei Bedingungen** erfüllen:
+Dieser Plot zeigt die monatliche Anzahl von Naechten, in denen der maximale gemessene MSAS-Wert (Himmelshelligkeit) **ueber 21.3** liegt. Die Ergebnisse werden fuer jedes Jahr separat dargestellt.
 
-- **Lila Balken**: Nächte, bei denen **90% der Himmelstemperatur < 0°C** liegen.
-- **Orange Balken**: Nächte, bei denen der maximale MSAS-Wert (Himmelshelligkeit) **> 21.3** ist.
+**Bedingungen fuer die Filterung der Naechte**:
 
----
+- `astronomical_night == 1` → Nur astronomische Naechte werden beruecksichtigt.
+- Der **maximale MSAS-Wert > 21.3** wird pro Nacht berechnet.
 
-**Filterbedingungen für die Nächte**
+**Berechnung**:
 
-- **Astronomische Nächte:** Nur Zeiträume, in denen der Himmel vollständig dunkel ist (`astronomical_night == 1`).
-- **Himmelstemperatur:** Nur Nächte mit Temperaturen unter 0°C (`sky_temperature < 0`).
+1. **Maximaler MSAS-Wert pro Nacht**:  
+   Fuer jede Nacht (`night_id`) wird der hoechste MSAS-Wert berechnet:  
+   `max_msas = max(MSAS_Werte pro Nacht)`
 
----
+2. **Filterung der Naechte**:  
+   Nur Naechte, bei denen der maximale MSAS-Wert die Schwelle von 21.3 ueberschreitet:  
+   `Bedingung: max_msas > 21.3`
 
-**Berechnungen**
+3. **Aggregation nach Monat und Jahr**:  
+   Die Anzahl der gefilterten Naechte wird pro Monat und Jahr berechnet:  
+   `Anzahl der Naechte = sum(1, wenn max_msas > 21.3)`
 
-1. **Maximale Helligkeit pro Nacht**:  
-   Für jede Nacht (`night_id`) wird der höchste gemessene MSAS-Wert berechnet:  
-   `max_msas = max(msas)`.
-
-2. **Prozent der Zeit mit Temperaturen unter 0°C**:  
-   Der Anteil der Zeit in einer Nacht, in der die Himmelstemperatur < 0°C lag:  
-   `sky_temp_below_zero_pct = (Summe(sky_temperature < 0) ÷ Anzahl der Messungen) × 100`.
-
-3. **Anzahl der Nächte mit MSAS > 21.3**:  
-   Nächte, bei denen `max_msas > 21.3`, werden gezählt:  
-   `nights_over_21_3 = Summe(max_msas > 21.3)`.
-
-4. **Anzahl der kalten Nächte**:  
-   Nächte, in denen mindestens 90% der Zeit die Himmelstemperatur unter 0°C lag:  
-   `nights_cold = Summe(sky_temp_below_zero_pct ≥ 90)`.
-
----
-
-#### Zweiter Plot: Verhältnis zwischen Nächten mit hoher Himmelsqualität und kalten Nächten
-
-**Beschreibung**:  
-Dieser Plot zeigt den **prozentualen Anteil** der Nächte, bei denen `max_msas > 21.3`, im Vergleich zu den kalten Nächten.
-
-- **Darstellung**: Pro Jahr wird ein kurzer Strich gezeichnet, der den Anteil (%) zeigt.
-- **Trendlinie**: Eine gestrichelte Linie zeigt ab mindestens 3 Jahren einen langfristigen Trend (lineare Regression).
-
----
-
-**Berechnung des Verhältnisses**
-
-Das Verhältnis (%) zwischen Nächten mit `max_msas > 21.3` und kalten Nächten wird berechnet als:
-- **Wenn kalte Nächte vorhanden sind (`nights_cold > 0`)**:  
-  `ratio = (nights_over_21_3 ÷ nights_cold) × 100`.
-
-- **Wenn keine kalten Nächte vorhanden sind**:  
-  `ratio = 0`.
+4. **Fehlende Monate**:  
+   Monate ohne Daten werden auf `0` gesetzt, um Luecken in der Darstellung zu vermeiden.
 
 ---
 
 ### Zusammenfassung
 
-1. **Erster Plot**: Zeigt die jährliche Anzahl von Nächten in zwei Kategorien:  
-   - Nächte mit hoher Himmelsqualität (max. MSAS > 21.3).  
-   - Nächte, in denen der Himmel überwiegend kalt war (Temperatur < 0°C).
+Der Plot visualisiert:
 
-2. **Zweiter Plot**: Visualisiert den Anteil der Nächte mit hoher Himmelsqualität im Vergleich zu den kalten Nächten.
+1. **Monatliche Anzahl** der besonders dunklen Naechte mit `max_msas > 21.3`.
+2. Ein Vergleich zwischen den Jahren zeigt saisonale und jahreszeitliche Unterschiede.
 
-3. **Filterbedingungen**:  
-   - Nur astronomische Nächte werden berücksichtigt.  
-   - Himmelstemperatur muss unter 0°C liegen.  
-   - Die Daten sind pro Jahr aggregiert und nach Bedingungen gefiltert.
+**Filterbedingungen**:
 
-**Diagrammziel**: Veranschaulichen, wie oft besonders dunkle Nächte auftreten und wie sie mit kalten Nächten in Beziehung stehen.
+- Nur astronomische Naechte.
+- Maximale Himmelshelligkeit > 21.3.
 
 ---
 
