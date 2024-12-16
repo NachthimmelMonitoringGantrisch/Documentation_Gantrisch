@@ -18,8 +18,4 @@
   "umsetzung-der-plattform-mit-docker-containern": {
     "title": "Umsetzung der Plattform mit Docker Containern",
     "order": 8
-  },
-  "projekt": { "title": "Projekt", "order": 9 },
-  "reflektion": { "title": "Reflektion", "order": 10 },
-  "fazit": { "title": "Fazit", "order": 11 }
-}
+  }
