@@ -4,56 +4,58 @@ Dies ist die Anleitung für die Nachthimmelmonitoring-Anwendung, die speziell f�
 
 ## Installation
 
-### Voraussetzungen
+Die Installation der Plattform "Nachthimmelmonitoring Naturpark Gantrisch" ist mit Docker Containern vorgesehen. 
+Die Umsetzung mit Docker war jedoch nicht erfolgreich. 
 
-- **Systemanforderungen**: Ein Rechner mit **Windows 10** oder höher bzw. ein kompatibles Betriebssystem.
-- **Internetverbindung**: Für den Zugriff auf aktuelle Daten und Software-Updates.
-
-### Schritte zur Installation
-
-Die Anleitung für die Installation finden Sie hier: [GitHub](https://github.com/NachthimmelMonitoringGantrisch/NachthimmelMonitoringGantrisch):
+Die Anleitung und die Abhängigkeiten für die Installation finden Sie hier: [GitHub](https://github.com/NachthimmelMonitoringGantrisch/NachthimmelMonitoringGantrisch).
 
 ---
 
 ## Übersicht der Anwendung
 
-Die Anwendung besteht aus drei Haupttabs:
+Die Anwendung besteht aus drei Hauptregisterkarten:
 
 1. **Daten herunterladen**: Laden Sie die Daten basierend auf einem definierten Zeitraum und Photometer herunter.
 2. **Photometer Analyse**: Visualisieren und analysieren Sie die Messdaten.
-3. **Analyse Report**: Exportieren Sie Berichte über ausgewählte Analysen. (Diese Funktion ist nicht umgesetzt)
+3. (**Analyse Report**): Exportieren Sie Berichte über ausgewählte Analysen. (Diese Funktion ist nicht umgesetzt)
 
 ---
 
 ## 1. Daten herunterladen
 
-In diesem Tab können Sie Messdaten aus einem definierten Zeitraum abrufen:
+In dieser Registerkarte können Sie Messdaten aus einem definierten Zeitraum abrufen:
 
 - **Zeitraum-Auswahl**: Wählen Sie über den **Datumsbereich-Selektor** einen Zeitraum aus.
 - **Photometer-Auswahl**: Wählen Sie über die **Metadatentabelle** einen oder mehrere Photometer aus.
 - **Daten herunterladen**: Drücken Sie den Button **Daten herunterladen**, um die Daten in einer Tabelle anzuzeigen.
 - **Statusbereich**: Statusmeldungen werden im **Statusbereich** angezeigt, um den Status des Downloads zu überwachen.
 
+![Bild 1](/userManual/DatenHerunterladen.png)
+**Abbildung 1**: Registerkarte "Daten herunterladen" mit Feld für die Benutzereingabe und der Metadatentabelle für die Auswahl der Photometer
+
 ---
 
 ## 2. Photometer Analyse
 
-Im **Photometer Analyse**-Tab können Sie aus verschiedenen Analysen wählen:
+In der **Photometer Analyse**-Registerkarte können Sie aus verschiedenen Analysen wählen:
 
 ### Analyse Typen
 
-- **Photometer Statistik**: Zeigt detaillierte Statistiken zu den gesammelten Daten an.
-- **Analyse pro Jahr**: Histogramme der Daten eines oder mehrerer Jahre.
-- **Analyse pro Monat**: Grafiken für monatliche Messwerte (Minimum, Maximum).
-- **Analyse Einzelnächte**: Detailanalysen einzelner Nächte.
-- **Photometer Vergleich**: Vergleicht Daten von zwei ausgewählten Photometern. (Diese Funktion ist nicht umgesetzt)
+- **2.1 Photometer Statistik**: Zeigt detaillierte Statistiken zu den gesammelten Daten an.
+- **2.2 Analyse pro Jahr**: Histogramme der Daten eines oder mehrerer Jahre.
+- **2.3 Analyse pro Monat**: Grafiken für monatliche Messwerte (Minimum, Maximum).
+- **2.4 Analyse Einzelnächte**: Detailanalysen einzelner Nächte.
+- (**Photometer Vergleich**): Vergleicht Daten von zwei ausgewählten Photometern. (Diese Funktion ist nicht umgesetzt)
 
 ### Bedienung
 
 - **Analyse Typ wählen**: Nutzen Sie die Dropdown-Menüs, um den gewünschten Analysemodus und die entsprechenden Parameter (z. B. Jahr, Monat, Photometer) auszuwählen.
 - **Dynamische Visualisierungen**: Die Hauptanzeige zeigt die relevanten Diagramme und Analysen basierend auf Ihrer Auswahl.
 
-### Photometer Statistik
+### 2.1 Photometer Statistik
+
+![Bild 2](/userManual/PhotometerStatistik.png)
+**Abbildung 2**: Registerkarte "Photometer Analyse" mit der Visualisierung "Photometer Statistik" für den Photometer "stars926"
 
 #### Erster Plot: "Jährliche Anzahl der Nächte nach Bedingung"
 
@@ -73,7 +75,8 @@ Dieser Plot zeigt die jährliche Anzahl von Nächten, die **zwei Bedingungen** e
 
 1. Für jede Nacht (`night_id`) wird der höchste MSAS-Wert berechnet.
 2. Nächte, die die oben genannten Bedingungen erfüllen, werden gezählt.
-3. Die Ergebnisse werden pro **Jahr** aggregiert.
+3. Die Ergebnisse werden pro Jahr aggregiert.
+
 ---
 
 #### Zweiter Plot:
@@ -94,7 +97,7 @@ Dieser Plot zeigt den **prozentualen Anteil** der Nächte, bei denen der maximal
 
 ---
 
-### Zusammenfassung
+#### Zusammenfassung Photometer Statistik
 
 Der Plot visualisiert:
 
@@ -108,8 +111,11 @@ Der Plot visualisiert:
 - Mondbeleuchtung < 30%.
 
 ---
+### 2.2 Analyse pro Jahr
 
-### Analyse pro Jahr
+
+![Bild 3](/userManual/AnalyseProJahr.png)
+**Abbildung 3**: Registerkarte "Photometer Analyse" mit der Visualisierung "Analyse pro Jahr" für den Photometer "stars926" in den Jahren 2023 und 2024
 
 **Beschreibung**:  
 Dieser Plot zeigt die monatliche Anzahl von Naechten, in denen der maximale gemessene MSAS-Wert (Himmelshelligkeit) **ueber 21.3** liegt. Die Ergebnisse werden fuer jedes Jahr separat dargestellt.
@@ -137,8 +143,7 @@ Dieser Plot zeigt die monatliche Anzahl von Naechten, in denen der maximale geme
    Monate ohne Daten werden auf `0` gesetzt, um Luecken in der Darstellung zu vermeiden.
 
 ---
-
-### Zusammenfassung
+#### Zusammenfassung Analyse pro Jahr
 
 Der Plot visualisiert:
 
@@ -151,8 +156,10 @@ Der Plot visualisiert:
 - Maximale Himmelshelligkeit > 21.3.
 
 ---
+### 2.3 Analyse pro Monat
 
-### Analyse pro Monat
+![Bild 4](/userManual/AnalyseProMonat.png)
+**Abbildung 4**: Registerkarte "Photometer Analyse" mit der Visualisierung "Analyse pro Monat" für den Photometer "stars926" im Monat November 2024
 
 #### Erster Plot: Minimale und maximale Helligkeit pro Nacht
 
@@ -230,7 +237,7 @@ Dieser Plot zeigt, wie sich die Mondphase (Neumond bis Vollmond) über den ausge
 
 ---
 
-### Zusammenfassung
+#### Zusammenfassung Analyse pro Monat
 
 Der Plot visualisiert:
 
@@ -246,7 +253,10 @@ Der Plot visualisiert:
 
 ---
 
-### Analyse Einzelnächte
+### 2.4 Analyse Einzelnächte
+
+![Bild 5](/userManual/AnalyseEinzelnaechte.png)
+**Abbildung 5**: Registerkarte "Photometer Analyse" mit der Visualisierung "Analyse Einzelnächte" für den Photometer "stars926" im Monat November 2024
 
 **Beschreibung**:
 Dieses Skript verarbeitet die von einem Photometer erfassten Daten, um die nächtlichen Bedingungen auf der Grundlage der gemessenen Helligkeit (MSAS) und der Temperatur des Himmels zu analysieren.  
@@ -308,7 +318,7 @@ Schliesslich erzeugt es Diagramme, die die in den Nächten eines bestimmten Mona
 
 ---
 
-### Zusammenfassung
+#### Zusammenfassung Analyse der Einzelnächte
 
 Der Plot visualisiert:
 
@@ -324,14 +334,21 @@ Der Plot visualisiert:
 
 ---
 
-## Erweiterungsmöglichkeiten
-Es wurden 2 Hauptoptionen zur Erweiterung der Funktionalität des Dashboards berücksichtigt.  
-1. Ermöglichung des Vergleichs von Photometern  
-2. Bereitstellung der Möglichkeit, einen Bericht mit den durchgeführten Analysen herunterzuladen  
+## 3. Erweiterungsmöglichkeiten
+Es wurden 2 Hauptfunktionen zur Erweiterung der Plattform Nachthimmelmonitoring erkannt.  
+1. Erweiterung des Analyse Typs "Photometer Vergleich"
+2. Implementierung der Funktion der Registerkarte "Analyse Report"
+
+![Bild 6](/userManual/AnalyseReport.png)
+**Abbildung 6**: Registerkarte "Analyse Report" mit Benutzereingabefeld für eine zukünftige Implementierung des Analyse Reports
+
+**Beschreibung**:
+Es soll ein Photometer und ein Jahr für den Report ausgewählt werden können. Alle Visualisierungen, welche bei den Ankreuzkasten ausgewählt werden, sollen in den Analyse
+Report eingefügt werden. Mit dem Klick auf Exportiere Report, wird dann der Report als PDF generiert.
 
 ---
 
-## Dokumentation und Support
+## 4. Dokumentation und Support
 
 Weitere Dokumentation und Hilfestellung finden Sie unter:
 
